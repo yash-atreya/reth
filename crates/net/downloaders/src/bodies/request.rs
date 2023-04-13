@@ -99,6 +99,7 @@ where
     /// Submit the request.
     fn submit_request(&mut self, req: Vec<H256>) {
         tracing::trace!(target: "downloaders::bodies", request_len = req.len(), "Requesting bodies");
+        tracing::trace!(target: "downloaders::bodies", first = ?req.first().unwrap(), last = ?req.last().unwrap(), "Requesting range from first / last bodies");
         let client = Arc::clone(&self.client);
         self.last_request_len = Some(req.len());
         self.fut = Some(client.get_block_bodies_with_priority(req, self.priority));
