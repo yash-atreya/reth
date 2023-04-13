@@ -810,5 +810,35 @@ mod tests {
         // outgoing MAC key:
         //  * 0x5ceedb5db054cbbd1d43b526e942274dbd47403f75a10629d14c814dda516401
         let _iv = [0x8cu8, 0x68, 0xce, 0xf8, 0xe0, 0xe7, 0x5f, 0xab, 0x4c, 0x5f, 0x2a, 0xe6, 0xf0, 0xac, 0x31, 0xb0];
+
+        // more test data
+        // OUTGOING:
+        //
+        // 2023-04-13T05:09:57.949302Z TRACE start_pending_outbound_session{remote_addr=127.0.0.1:30303}:connect{remote_id=0xbfb77df5e1485ea5c0ee1a936d402c090f12ac262bec62bef1df79d0af32cbfc571042c2a280142c073c80ebe97ccdd11e48bc200bfd28f4cbe56309150b65ef peer="Some(127.0.0.1:30303)"}: sending ecies auth ...
+        // 2023-04-13T05:09:57.949517Z TRACE start_pending_outbound_session{remote_addr=127.0.0.1:30303}:connect{remote_id=0xbfb77df5e1485ea5c0ee1a936d402c090f12ac262bec62bef1df79d0af32cbfc571042c2a280142c073c80ebe97ccdd11e48bc200bfd28f4cbe56309150b65ef peer="Some(127.0.0.1:30303)"}:encode{item=Auth peer="Some(\"0xbfb7…65ef\")" state="Auth"}: Computing OUTGOING shared secret remote_public_key=PublicKey(fccb32afd079dff1be62ec2b26ac120f092c406d931aeec0a55e48e1f57db7bfef650b150963e5cbf428fd0b20bc481ed1cd7ce9eb803c072c1480a2c2421057) local_public_key=PublicKey(5abbaf141a7ee2f8ea5b945d2098c72e6b920df3e8ecd01666d70f4852be0f0680d2e30dfb4cae266bb013bada8a4ae8edb3319efafe3bb3d7628cc934083a43) secret_key=SecretKey(#1fce2d840a9c7022)
+        // 2023-04-13T05:09:57.949556Z TRACE start_pending_outbound_session{remote_addr=127.0.0.1:30303}:connect{remote_id=0xbfb77df5e1485ea5c0ee1a936d402c090f12ac262bec62bef1df79d0af32cbfc571042c2a280142c073c80ebe97ccdd11e48bc200bfd28f4cbe56309150b65ef peer="Some(127.0.0.1:30303)"}:encode{item=Auth peer="Some(\"0xbfb7…65ef\")" state="Auth"}: Computed OUTGOING shared secret x=0xfde91df6d7fdf521da8a6123dfc9e6cddf759d8d8115f4fac4a3de5099bcba5a
+        // 2023-04-13T05:09:57.949597Z TRACE start_pending_outbound_session{remote_addr=127.0.0.1:30303}:connect{remote_id=0xbfb77df5e1485ea5c0ee1a936d402c090f12ac262bec62bef1df79d0af32cbfc571042c2a280142c073c80ebe97ccdd11e48bc200bfd28f4cbe56309150b65ef peer="Some(127.0.0.1:30303)"}:encode{item=Auth peer="Some(\"0xbfb7…65ef\")" state="Auth"}: Computing OUTGOING HMAC-SHA256 tag mac_key=0xd55e4039d7500a9359b6a6aad74207a8650b04d364347501c31ffe3418eae3c5 iv=0x07c3fe9a7344770f0c21bc3ca77dcf2b auth_data=[1, 227] total_size=483
+        // 2023-04-13T05:09:57.949613Z TRACE start_pending_outbound_session{remote_addr=127.0.0.1:30303}:connect{remote_id=0xbfb77df5e1485ea5c0ee1a936d402c090f12ac262bec62bef1df79d0af32cbfc571042c2a280142c073c80ebe97ccdd11e48bc200bfd28f4cbe56309150b65ef peer="Some(127.0.0.1:30303)"}:encode{item=Auth peer="Some(\"0xbfb7…65ef\")" state="Auth"}: Computed OUTGOING HMAC-SHA256 tag tag=0x4c09f5d47a8edcfd564ec43e4ed2e0c436130ed39fca00b54d8ecf2cb8ca9f5d
+        // 2023-04-13T05:09:57.949655Z TRACE start_pending_outbound_session{remote_addr=127.0.0.1:30303}:connect{remote_id=0xbfb77df5e1485ea5c0ee1a936d402c090f12ac262bec62bef1df79d0af32cbfc571042c2a280142c073c80ebe97ccdd11e48bc200bfd28f4cbe56309150b65ef peer="Some(127.0.0.1:30303)"}: waiting for ecies ack ...
+        // 2023-04-13T05:09:57.949994Z TRACE start_pending_outbound_session{remote_addr=127.0.0.1:30303}:connect{remote_id=0xbfb77df5e1485ea5c0ee1a936d402c090f12ac262bec62bef1df79d0af32cbfc571042c2a280142c073c80ebe97ccdd11e48bc200bfd28f4cbe56309150b65ef peer="Some(127.0.0.1:30303)"}:decode{peer="Some(\"0xbfb7…65ef\")" state="Ack"}: parsing ack with len 0
+        //
+        // outgoing local secret key: SecretKey(#1fce2d840a9c7022)
+        // outgoing local_public_key: 5abbaf141a7ee2f8ea5b945d2098c72e6b920df3e8ecd01666d70f4852be0f0680d2e30dfb4cae266bb013bada8a4ae8edb3319efafe3bb3d7628cc934083a43
+        // outgoing remote public key: fccb32afd079dff1be62ec2b26ac120f092c406d931aeec0a55e48e1f57db7bfef650b150963e5cbf428fd0b20bc481ed1cd7ce9eb803c072c1480a2c2421057
+        //
+        // incoming remote public_key: 5abbaf141a7ee2f8ea5b945d2098c72e6b920df3e8ecd01666d70f4852be0f0680d2e30dfb4cae266bb013bada8a4ae8edb3319efafe3bb3d7628cc934083a43
+        // incoming local secret key: SecretKey(#c190c7b6364bc900)
+        // incoming local public key: 4530ae8a9e00a2d0d58c9b54202770cb94c150eaf15c564f08413168c078ef90ebf8b0f2bed101b83c02f57c8670d8b19cc89ab9fe170a8cbf433139c7ef8abb
+        //
+        // INCOMING:
+        // reth_1        | 2023-04-13T05:09:57.949771Z TRACE incoming{peer="Some(172.18.0.1:45116)"}:decode{peer="None" state="Auth"}: parsing auth
+        // reth_1        | 2023-04-13T05:09:57.949813Z TRACE incoming{peer="Some(172.18.0.1:45116)"}:decode{peer="None" state="Auth"}:read_auth: Computing INCOMING shared secret public_key=PublicKey(5abbaf141a7ee2f8ea5b945d2098c72e6b920df3e8ecd01666d70f4852be0f0680d2e30dfb4cae266bb013bada8a4ae8edb3319efafe3bb3d7628cc934083a43) local_mac_public_key=PublicKey(4530ae8a9e00a2d0d58c9b54202770cb94c150eaf15c564f08413168c078ef90ebf8b0f2bed101b83c02f57c8670d8b19cc89ab9fe170a8cbf433139c7ef8abb) secret_key=SecretKey(#c190c7b6364bc900)
+        // reth_1        | 2023-04-13T05:09:57.949884Z TRACE incoming{peer="Some(172.18.0.1:45116)"}:decode{peer="None" state="Auth"}:read_auth: Computed INCOMING shared secret x=0xb35c4b55df634f79236d983f8e080333709387b4f2a55a7187e1bbebcecf1a53
+        // reth_1        | 2023-04-13T05:09:57.949900Z TRACE incoming{peer="Some(172.18.0.1:45116)"}:decode{peer="None" state="Auth"}:read_auth: Computing INCOMING HMAC-SHA256 tag mac_key=0xb73f95a1db1c577ecb8828bde32f677b495618916beca2edb76861862dedb806 iv=[7, 195, 254, 154, 115, 68, 119, 15, 12, 33, 188, 60, 167, 125, 207, 43] auth_data=[1, 227]
+        // reth_1        | 2023-04-13T05:09:57.949909Z TRACE incoming{peer="Some(172.18.0.1:45116)"}:decode{peer="None" state="Auth"}:read_auth: Computed INCOMING check tag received=0x4c09f5d47a8edcfd564ec43e4ed2e0c436130ed39fca00b54d8ecf2cb8ca9f5d computed=0x7bdbc3552fe54dfa385cc6eca95a0754f7925303b642c2422083dbb8732dd13b
+        // reth_1        | 2023-04-13T05:09:57.949998Z  WARN Incoming pending session failed remote_addr=172.18.0.1:45116 error=Some(Ecies(TagCheckDecryptFailed))
+
+        // So they're not using the same key for the tag check. They do exchange their remote
+        // public keys but the local key is randomly generated
     }
 }
