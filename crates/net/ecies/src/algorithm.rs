@@ -232,7 +232,8 @@ impl ECIES {
         let (iv, encrypted_data) = split_at_mut(data_iv, 16)?;
         let tag = H256::from_slice(tag_bytes);
 
-        trace!(target: "ecies", ?public_key, secret_key=?self.secret_key, "Computing INCOMING shared secret");
+        let local_mac_public_key = self.secret_key.public_key(SECP256K1);
+        trace!(target: "ecies", ?public_key, ?local_mac_public_key, secret_key=?self.secret_key, "Computing INCOMING shared secret");
         let x = ecdh_x(&public_key, &self.secret_key);
         trace!(target: "ecies", ?x, "Computed INCOMING shared secret");
 
