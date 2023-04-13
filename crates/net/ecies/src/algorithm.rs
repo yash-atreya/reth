@@ -107,6 +107,7 @@ impl ECIES {
         let public_key = PublicKey::from_secret_key(SECP256K1, &secret_key);
         let remote_public_key = id2pk(remote_id)?;
         let ephemeral_public_key = PublicKey::from_secret_key(SECP256K1, &ephemeral_secret_key);
+        trace!(target: "ecies", ?remote_public_key, local_public_key=?public_key, ?remote_id, "Created new static ECIES client");
 
         Ok(Self {
             secret_key,
@@ -149,6 +150,7 @@ impl ECIES {
     ) -> Result<Self, ECIESError> {
         let public_key = PublicKey::from_secret_key(SECP256K1, &secret_key);
         let ephemeral_public_key = PublicKey::from_secret_key(SECP256K1, &ephemeral_secret_key);
+        trace!(target: "ecies", ?public_key, "Created new static ECIES server");
 
         Ok(Self {
             secret_key,
@@ -272,6 +274,7 @@ impl ECIES {
         sig_bytes[64] = rec_id.to_i32() as u8;
 
         let id = pk2id(&self.public_key);
+        trace!(target: "ecies", public_key=?self.public_key, ?id, "Computed local peer id for auth");
 
         #[derive(RlpEncodable)]
         struct S<'a> {
@@ -331,7 +334,9 @@ impl ECIES {
         )?;
         let remote_id = data.get_next()?.ok_or(ECIESErrorImpl::InvalidAuthData)?;
         self.remote_id = Some(remote_id);
+        trace!(target: "ecies", ?remote_id, "Received INCOMING remote id, computing remote public key");
         self.remote_public_key = Some(id2pk(remote_id)?);
+        trace!(target: "ecies", remote_public_key=?self.remote_public_key, "Computed INCOMING remote public key");
         self.remote_nonce = Some(data.get_next()?.ok_or(ECIESErrorImpl::InvalidAuthData)?);
 
         let x = ecdh_x(&self.remote_public_key.unwrap(), &self.secret_key);
@@ -840,5 +845,20 @@ mod tests {
 
         // So they're not using the same key for the tag check. They do exchange their remote
         // public keys but the local key is randomly generated
+        //
+        // The outgoing remote public key is DIFFERENT! This should be the local public key of the
+        // incoming peer, right?
+        //
+        // This means that the incoming peer should be using a different secret key to compute the
+        // shared secret.
+        //
+        // The outgoing peer encodes its public key in the message, so it can use a randomly
+        // generated secret key.
+        //
+        // We're trying to figure out where the `fcc...` remote public key is coming from here!
+        // Why does the incoming peer have it, and why does it not correspond to its secret key for
+        // incoming messages?
+        //
+        // Are we not sending the right pubkey in auth?
     }
 }
