@@ -195,7 +195,8 @@ impl ECIES {
             &PublicKey::from_secret_key(SECP256K1, &secret_key).serialize_uncompressed(),
         );
 
-        trace!(target: "ecies", remote_public_key=?self.remote_public_key.unwrap(), secret_key=?self.secret_key, "Computing OUTGOING shared secret");
+        let local_public_key = secret_key.public_key(SECP256K1);
+        trace!(target: "ecies", remote_public_key=?self.remote_public_key.unwrap(), ?local_public_key, secret_key=?self.secret_key, "Computing OUTGOING shared secret");
         let x = ecdh_x(&self.remote_public_key.unwrap(), &secret_key);
         trace!(target: "ecies", ?x, "Computed OUTGOING shared secret");
 
