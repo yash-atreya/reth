@@ -3,15 +3,15 @@ use reth_beacon_consensus::BeaconEngineSender;
 use reth_interfaces::consensus::ForkchoiceState;
 use reth_primitives::{BlockHash, BlockNumber};
 use reth_rpc_types::engine::{
-    ExecutionPayload, ExecutionPayloadBodies, ExecutionPayloadEnvelope, ForkchoiceUpdated,
-    PayloadAttributes, PayloadId, PayloadStatus, TransitionConfiguration,
+    EngineRpcError, ExecutionPayload, ExecutionPayloadBodies, ExecutionPayloadEnvelope,
+    ForkchoiceUpdated, PayloadAttributes, PayloadId, PayloadStatus, TransitionConfiguration,
 };
 
 /// Message type for communicating with [`EngineApi`][crate::EngineApi].
 #[derive(Debug)]
 pub enum EngineApiMessage {
     /// Get payload message
-    GetPayload(PayloadId, BeaconEngineSender<ExecutionPayloadEnvelope>),
+    GetPayload(PayloadId, BeaconEngineSender<Result<ExecutionPayloadEnvelope, EngineRpcError>>),
     /// Get payload bodies by range message
     GetPayloadBodiesByRange(BlockNumber, u64, EngineApiSender<ExecutionPayloadBodies>),
     /// Get payload bodies by hash message
@@ -22,12 +22,12 @@ pub enum EngineApiMessage {
         EngineApiSender<TransitionConfiguration>,
     ),
     /// New payload message
-    NewPayload(ExecutionPayload, BeaconEngineSender<PayloadStatus>),
+    NewPayload(ExecutionPayload, BeaconEngineSender<Result<PayloadStatus, EngineRpcError>>),
     /// Forkchoice updated message
     ForkchoiceUpdated(
         ForkchoiceState,
         Option<PayloadAttributes>,
-        BeaconEngineSender<ForkchoiceUpdated>,
+        BeaconEngineSender<Result<ForkchoiceUpdated, EngineRpcError>>,
     ),
 }
 

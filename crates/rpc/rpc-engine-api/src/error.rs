@@ -1,6 +1,6 @@
-use jsonrpsee_types::error::{INTERNAL_ERROR_CODE, INVALID_PARAMS_CODE};
 use reth_beacon_consensus::BeaconEngineError;
 use reth_primitives::{H256, U256};
+use reth_rpc_types::engine::EngineRpcError;
 use thiserror::Error;
 
 /// The Engine API result type
@@ -14,9 +14,6 @@ pub const REQUEST_TOO_LARGE_CODE: i32 = -38004;
 /// Error returned by [`EngineApi`][crate::EngineApi]
 #[derive(Error, Debug)]
 pub enum EngineApiError {
-    /// Unknown payload requested.
-    #[error("Unknown payload")]
-    PayloadUnknown,
     /// The payload body request length is too large.
     #[error("Payload request too large: {len}")]
     PayloadRequestTooLarge {
@@ -63,6 +60,9 @@ pub enum EngineApiError {
     /// Beacon consensus engine error.
     #[error(transparent)]
     ConsensusEngine(#[from] BeaconEngineError),
+    /// Specific Engine API error variant from the spec.
+    #[error(transparent)]
+    EngineRpcError(#[from] EngineRpcError),
     /// Encountered an internal error.
     #[error(transparent)]
     Internal(Box<dyn std::error::Error + Send + Sync>),
@@ -74,11 +74,11 @@ impl From<EngineApiError> for jsonrpsee_types::error::CallError {
             EngineApiError::InvalidBodiesRange { .. } |
             EngineApiError::WithdrawalsNotSupportedInV1 |
             EngineApiError::NoWithdrawalsPostShanghai |
-            EngineApiError::HasWithdrawalsPreShanghai => INVALID_PARAMS_CODE,
-            EngineApiError::PayloadUnknown => UNKNOWN_PAYLOAD_CODE,
-            EngineApiError::PayloadRequestTooLarge { .. } => REQUEST_TOO_LARGE_CODE,
+            EngineApiError::HasWithdrawalsPreShanghai => EngineRpcError::InvalidParams.code(),
+            EngineApiError::PayloadRequestTooLarge { .. } => EngineRpcError::TooLargeRequest.code(),
+            EngineApiError::EngineRpcError(error) => error.code(),
             // Any other server error
-            _ => INTERNAL_ERROR_CODE,
+            _ => EngineRpcError::InternalError.code(),
         };
         jsonrpsee_types::error::CallError::Custom(jsonrpsee_types::error::ErrorObject::owned(
             code,

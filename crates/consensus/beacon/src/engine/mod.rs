@@ -153,14 +153,14 @@ where
         &mut self,
         state: ForkchoiceState,
         attrs: Option<PayloadAttributes>,
-    ) -> Result<ForkchoiceUpdated, BeaconEngineError> {
+    ) -> Result<Result<ForkchoiceUpdated, EngineRpcError>, BeaconEngineError> {
         trace!(target: "consensus::engine", ?state, "Received new forkchoice state");
         if state.head_block_hash.is_zero() {
-            return Ok(ForkchoiceUpdated::new(PayloadStatus::from_status(
+            return Ok(Ok(ForkchoiceUpdated::new(PayloadStatus::from_status(
                 PayloadStatusEnum::Invalid {
                     validation_error: BeaconEngineError::ForkchoiceEmptyHead.to_string(),
                 },
-            )))
+            ))))
         }
 
         // TODO: check PoW / EIP-3675 terminal block conditions for the fork choice head
@@ -225,7 +225,7 @@ where
         };
 
         trace!(target: "consensus::engine", ?state, ?status, "Returning forkchoice status");
-        Ok(ForkchoiceUpdated::new(status))
+        Ok(Ok(ForkchoiceUpdated::new(status)))
     }
 
     /// Validates the payload attributes with respect to the header and fork choice state.
@@ -234,7 +234,7 @@ where
         attrs: PayloadAttributes,
         header: Header,
         state: ForkchoiceState,
-    ) -> Result<ForkchoiceUpdated, BeaconEngineError> {
+    ) -> Result<Result<ForkchoiceUpdated, EngineRpcError>, BeaconEngineError> {
         // 7. Client software MUST ensure that payloadAttributes.timestamp is
         //    greater than timestamp of a block referenced by
         //    forkchoiceState.headBlockHash. If this condition isn't held client
@@ -242,11 +242,7 @@ where
         //    MUST NOT begin a payload build process. In such an event, the
         //    forkchoiceState update MUST NOT be rolled back.
         if attrs.timestamp <= header.timestamp.into() {
-            return Ok(ForkchoiceUpdated::new(PayloadStatus::from_status(
-                PayloadStatusEnum::Invalid {
-                    validation_error: EngineRpcError::InvalidPayloadAttributes.to_string(),
-                },
-            )))
+            return Ok(Err(EngineRpcError::InvalidPayloadAttributes))
         }
 
         // 8. Client software MUST begin a payload build process building on top of
@@ -269,18 +265,18 @@ where
         // }
         //
         // if the payload is deemed VALID and the build process has begun.
-        Ok(ForkchoiceUpdated::new(PayloadStatus::new(
+        Ok(Ok(ForkchoiceUpdated::new(PayloadStatus::new(
             PayloadStatusEnum::Valid,
             Some(state.head_block_hash),
         ))
-        .with_payload_id(payload_id))
+        .with_payload_id(payload_id)))
     }
 
     /// Called to receive the execution payload associated with a payload build process.
     pub fn on_get_payload(
         &self,
         _payload_id: PayloadId,
-    ) -> Result<ExecutionPayloadEnvelope, BeaconEngineError> {
+    ) -> Result<Result<ExecutionPayloadEnvelope, EngineRpcError>, BeaconEngineError> {
         // TODO: Client software SHOULD stop the updating process when either a call to
         // engine_getPayload with the build process's payloadId is made or SECONDS_PER_SLOT (12s in
         // the Mainnet configuration) have passed since the point in time identified by the
@@ -307,7 +303,7 @@ where
     fn on_new_payload(
         &mut self,
         payload: ExecutionPayload,
-    ) -> Result<PayloadStatus, reth_interfaces::Error> {
+    ) -> Result<Result<PayloadStatus, EngineRpcError>, reth_interfaces::Error> {
         let block_number = payload.block_number.as_u64();
         let block_hash = payload.block_hash;
         trace!(target: "consensus::engine", ?block_hash, block_number, "Received new payload");
@@ -315,7 +311,7 @@ where
             Ok(block) => block,
             Err(error) => {
                 error!(target: "consensus::engine", ?block_hash, block_number, ?error, "Invalid payload");
-                return Ok(error.into())
+                return Ok(Ok(error.into()))
             }
         };
 
@@ -349,7 +345,7 @@ where
             PayloadStatus::from_status(PayloadStatusEnum::Syncing)
         };
         trace!(target: "consensus::engine", ?block_hash, block_number, ?status, "Returning payload status");
-        Ok(status)
+        Ok(Ok(status))
     }
 
     /// Returns the next pipeline state depending on the current value of the next action.
@@ -460,8 +456,11 @@ where
                                 return Poll::Ready(Err(error))
                             }
                         };
-                        let is_valid_response =
-                            matches!(response.payload_status.status, PayloadStatusEnum::Valid);
+                        let is_valid_response = if let Ok(response) = &response {
+                            matches!(response.payload_status.status, PayloadStatusEnum::Valid)
+                        } else {
+                            false
+                        };
                         let _ = tx.send(Ok(response));
 
                         // Terminate the sync early if it's reached the maximum user
@@ -473,6 +472,13 @@ where
                             }
                         }
                     }
+                    // step 1: ensure forkchoiceUpdated errors are covered by the new error enum
+                    // step 2: figure out type for beacon error (intention is to force the user
+                    // to handle the engine api rpc error differently than other errors)
+                    // step 3: refactor usages of the engine api rpc error to use the new error
+                    // variant and return it back
+                    // Maybe make Result<Result<_, _>, _> to make it more obvious that the user
+                    // should pass back the inner result type?
                     BeaconEngineMessage::NewPayload { payload, tx } => {
                         this.metrics.new_payload_messages.increment(1);
                         let response = match this.on_new_payload(payload) {
@@ -490,11 +496,6 @@ where
                             Ok(response) => {
                                 // good response, send it back
                                 let _ = tx.send(Ok(response));
-                            }
-                            Err(BeaconEngineError::EngineApi(error)) => {
-                                // specific error that we should report back to the client
-                                error!(target: "consensus::engine", ?error, "Sending engine api error response");
-                                let _ = tx.send(Err(BeaconEngineError::EngineApi(error)));
                             }
                             Err(error) => {
                                 error!(target: "consensus::engine", ?error, "Error getting get payload response");
@@ -642,7 +643,7 @@ mod tests {
         fn send_new_payload(
             &self,
             payload: ExecutionPayload,
-        ) -> oneshot::Receiver<BeaconEngineResult<PayloadStatus>> {
+        ) -> oneshot::Receiver<BeaconEngineResult<Result<PayloadStatus, EngineRpcError>>> {
             let (tx, rx) = oneshot::channel();
             self.sync_tx
                 .send(BeaconEngineMessage::NewPayload { payload, tx })
@@ -653,7 +654,8 @@ mod tests {
         fn send_forkchoice_updated(
             &self,
             state: ForkchoiceState,
-        ) -> oneshot::Receiver<BeaconEngineResult<ForkchoiceUpdated>> {
+        ) -> oneshot::Receiver<BeaconEngineResult<Result<ForkchoiceUpdated, EngineRpcError>>>
+        {
             let (tx, rx) = oneshot::channel();
             self.sync_tx
                 .send(BeaconEngineMessage::ForkchoiceUpdated { state, payload_attrs: None, tx })
@@ -882,7 +884,7 @@ mod tests {
             let expected_result = ForkchoiceUpdated::from_status(PayloadStatusEnum::Invalid {
                 validation_error: BeaconEngineError::ForkchoiceEmptyHead.to_string(),
             });
-            assert_matches!(rx.await, Ok(Ok(result)) => assert_eq!(result, expected_result));
+            assert_matches!(rx.await, Ok(Ok(Ok(result))) => assert_eq!(result, expected_result));
 
             assert_matches!(engine_rx.try_recv(), Err(TryRecvError::Empty));
         }
@@ -917,14 +919,14 @@ mod tests {
 
             let rx_invalid = env.send_forkchoice_updated(forkchoice);
             let expected_result = ForkchoiceUpdated::from_status(PayloadStatusEnum::Syncing);
-            assert_matches!(rx_invalid.await, Ok(Ok(result)) => assert_eq!(result, expected_result));
+            assert_matches!(rx_invalid.await, Ok(Ok(Ok(result))) => assert_eq!(result, expected_result));
 
             let rx_valid = env.send_forkchoice_updated(forkchoice);
             let expected_result = ForkchoiceUpdated::new(PayloadStatus::new(
                 PayloadStatusEnum::Valid,
                 Some(block1.hash),
             ));
-            assert_matches!(rx_valid.await, Ok(Ok(result)) => assert_eq!(result, expected_result));
+            assert_matches!(rx_valid.await, Ok(Ok(Ok(result))) => assert_eq!(result, expected_result));
 
             assert_matches!(engine_rx.try_recv(), Err(TryRecvError::Empty));
         }
@@ -966,12 +968,12 @@ mod tests {
             insert_blocks(env.db.as_ref(), [&next_head].into_iter());
 
             let expected_result = ForkchoiceUpdated::from_status(PayloadStatusEnum::Syncing);
-            assert_matches!(invalid_rx.await, Ok(Ok(result)) => assert_eq!(result, expected_result));
+            assert_matches!(invalid_rx.await, Ok(Ok(Ok(result))) => assert_eq!(result, expected_result));
 
             let valid_rx = env.send_forkchoice_updated(next_forkchoice_state);
             let expected_result = ForkchoiceUpdated::from_status(PayloadStatusEnum::Valid)
                 .with_latest_valid_hash(next_head.hash);
-            assert_matches!(valid_rx.await, Ok(Ok(result)) => assert_eq!(result, expected_result));
+            assert_matches!(valid_rx.await, Ok(Ok(Ok(result))) => assert_eq!(result, expected_result));
 
             assert_matches!(engine_rx.try_recv(), Err(TryRecvError::Empty));
         }
@@ -1003,7 +1005,7 @@ mod tests {
                 ..Default::default()
             });
             let expected_result = ForkchoiceUpdated::from_status(PayloadStatusEnum::Syncing);
-            assert_matches!(rx.await, Ok(Ok(result)) => assert_eq!(result, expected_result));
+            assert_matches!(rx.await, Ok(Ok(Ok(result))) => assert_eq!(result, expected_result));
             drop(engine);
         }
 
@@ -1038,7 +1040,7 @@ mod tests {
                 ..Default::default()
             });
             let expected_result = ForkchoiceUpdated::from_status(PayloadStatusEnum::Syncing);
-            assert_matches!(rx.await, Ok(Ok(result)) => assert_eq!(result, expected_result));
+            assert_matches!(rx.await, Ok(Ok(Ok(result))) => assert_eq!(result, expected_result));
 
             let rx = env.send_forkchoice_updated(ForkchoiceState {
                 head_block_hash: block1.hash,
@@ -1049,7 +1051,7 @@ mod tests {
                 validation_error: ExecutorError::BlockPreMerge { hash: block1.hash }.to_string(),
             })
             .with_latest_valid_hash(H256::zero());
-            assert_matches!(rx.await, Ok(Ok(result)) => assert_eq!(result, expected_result));
+            assert_matches!(rx.await, Ok(Ok(Ok(result))) => assert_eq!(result, expected_result));
             drop(engine);
         }
     }
@@ -1082,12 +1084,12 @@ mod tests {
             // Send new payload
             let rx = env.send_new_payload(random_block(0, None, None, Some(0)).into());
             // Invalid, because this is a genesis block
-            assert_matches!(rx.await, Ok(Ok(result)) => assert_matches!(result.status, PayloadStatusEnum::Invalid { .. }));
+            assert_matches!(rx.await, Ok(Ok(Ok(result))) => assert_matches!(result.status, PayloadStatusEnum::Invalid { .. }));
 
             // Send new payload
             let rx = env.send_new_payload(random_block(1, None, None, Some(0)).into());
             let expected_result = PayloadStatus::from_status(PayloadStatusEnum::Syncing);
-            assert_matches!(rx.await, Ok(Ok(result)) => assert_eq!(result, expected_result));
+            assert_matches!(rx.await, Ok(Ok(Ok(result))) => assert_eq!(result, expected_result));
 
             assert_matches!(engine_rx.try_recv(), Err(TryRecvError::Empty));
         }
@@ -1122,13 +1124,13 @@ mod tests {
             });
             let expected_result =
                 ForkchoiceUpdated::new(PayloadStatus::from_status(PayloadStatusEnum::Syncing));
-            assert_matches!(rx.await, Ok(Ok(result)) => assert_eq!(result, expected_result));
+            assert_matches!(rx.await, Ok(Ok(Ok(result))) => assert_eq!(result, expected_result));
 
             // Send new payload
             let rx = env.send_new_payload(block2.clone().into());
             let expected_result = PayloadStatus::from_status(PayloadStatusEnum::Valid)
                 .with_latest_valid_hash(block2.hash);
-            assert_matches!(rx.await, Ok(Ok(result)) => assert_eq!(result, expected_result));
+            assert_matches!(rx.await, Ok(Ok(Ok(result))) => assert_eq!(result, expected_result));
 
             assert_matches!(engine_rx.try_recv(), Err(TryRecvError::Empty));
         }
@@ -1162,13 +1164,13 @@ mod tests {
             });
             let expected_result =
                 ForkchoiceUpdated::new(PayloadStatus::from_status(PayloadStatusEnum::Syncing));
-            assert_matches!(rx.await, Ok(Ok(result)) => assert_eq!(result, expected_result));
+            assert_matches!(rx.await, Ok(Ok(Ok(result))) => assert_eq!(result, expected_result));
 
             // Send new payload
             let block = random_block(2, Some(H256::random()), None, Some(0));
             let rx = env.send_new_payload(block.into());
             let expected_result = PayloadStatus::from_status(PayloadStatusEnum::Syncing);
-            assert_matches!(rx.await, Ok(Ok(result)) => assert_eq!(result, expected_result));
+            assert_matches!(rx.await, Ok(Ok(Ok(result))) => assert_eq!(result, expected_result));
 
             assert_matches!(engine_rx.try_recv(), Err(TryRecvError::Empty));
         }
@@ -1212,7 +1214,7 @@ mod tests {
             });
             let expected_result =
                 ForkchoiceUpdated::new(PayloadStatus::from_status(PayloadStatusEnum::Syncing));
-            assert_matches!(rx.await, Ok(Ok(result)) => assert_eq!(result, expected_result));
+            assert_matches!(rx.await, Ok(Ok(Ok(result))) => assert_eq!(result, expected_result));
 
             // Send new payload
             let rx = env.send_new_payload(block2.clone().into());
@@ -1220,7 +1222,7 @@ mod tests {
                 validation_error: ExecutorError::BlockPreMerge { hash: block2.hash }.to_string(),
             })
             .with_latest_valid_hash(H256::zero());
-            assert_matches!(rx.await, Ok(Ok(result)) => assert_eq!(result, expected_result));
+            assert_matches!(rx.await, Ok(Ok(Ok(result))) => assert_eq!(result, expected_result));
 
             assert_matches!(engine_rx.try_recv(), Err(TryRecvError::Empty));
         }

@@ -1,5 +1,7 @@
 //! Commonly used errors for the `engine_` namespace.
 
+use jsonrpsee_types::error::{INTERNAL_ERROR_CODE, INVALID_PARAMS_CODE};
+
 /// List of Engine API errors, see <https://github.com/ethereum/execution-apis/blob/main/src/engine/common.md#errors>
 #[derive(Debug, Copy, PartialEq, Eq, Clone, thiserror::Error)]
 pub enum EngineRpcError {
@@ -42,8 +44,8 @@ impl EngineRpcError {
             EngineRpcError::ParseError => -32700,
             EngineRpcError::InvalidRequest => -32600,
             EngineRpcError::MethodNotFound => -32601,
-            EngineRpcError::InvalidParams => -32602,
-            EngineRpcError::InternalError => -32603,
+            EngineRpcError::InvalidParams => INVALID_PARAMS_CODE,
+            EngineRpcError::InternalError => INTERNAL_ERROR_CODE,
             EngineRpcError::ServerError => -32000,
             EngineRpcError::UnknownPayload => -38001,
             EngineRpcError::InvalidForkchoiceState => -38002,

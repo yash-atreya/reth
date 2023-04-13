@@ -1,8 +1,8 @@
 use crate::BeaconEngineResult;
 use reth_interfaces::consensus::ForkchoiceState;
 use reth_rpc_types::engine::{
-    ExecutionPayload, ExecutionPayloadEnvelope, ForkchoiceUpdated, PayloadAttributes, PayloadId,
-    PayloadStatus,
+    EngineRpcError, ExecutionPayload, ExecutionPayloadEnvelope, ForkchoiceUpdated,
+    PayloadAttributes, PayloadId, PayloadStatus,
 };
 use tokio::sync::oneshot;
 
@@ -17,7 +17,10 @@ pub enum BeaconEngineMessage {
         /// The execution payload received by Engine API.
         payload: ExecutionPayload,
         /// The sender for returning payload status result.
-        tx: BeaconEngineSender<PayloadStatus>,
+        ///
+        /// The inner `EngineRpcError` is intended to be returned from the engine API, whereas the
+        /// Err variant of the outer `BeaconEngineResult` is considered to be an internal error.
+        tx: BeaconEngineSender<Result<PayloadStatus, EngineRpcError>>,
     },
     /// Message with updated forkchoice state.
     ForkchoiceUpdated {
@@ -26,13 +29,19 @@ pub enum BeaconEngineMessage {
         /// The payload attributes for block building.
         payload_attrs: Option<PayloadAttributes>,
         /// The sender for returning forkchoice updated result.
-        tx: BeaconEngineSender<ForkchoiceUpdated>,
+        ///
+        /// The inner `EngineRpcError` is intended to be returned from the engine API, whereas the
+        /// Err variant of the outer `BeaconEngineResult` is considered to be an internal error.
+        tx: BeaconEngineSender<Result<ForkchoiceUpdated, EngineRpcError>>,
     },
     /// Message with get payload parameters.
     GetPayload {
         /// The payload id.
         payload_id: PayloadId,
         /// The sender for returning payload result.
-        tx: BeaconEngineSender<ExecutionPayloadEnvelope>,
+        ///
+        /// The inner `EngineRpcError` is intended to be returned from the engine API, whereas the
+        /// Err variant of the outer `BeaconEngineResult` is considered to be an internal error.
+        tx: BeaconEngineSender<Result<ExecutionPayloadEnvelope, EngineRpcError>>,
     },
 }
