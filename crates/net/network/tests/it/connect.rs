@@ -84,6 +84,23 @@ async fn test_establish_connections() {
     }
 }
 
+// The problem: when connecting two reth nodes locally, the ECIES handshake fails. On the sending
+// side, the client gets a `UnreadableStream`, and on the receiving (incoming) side, the client
+// fails the handshake with `TagCheckDecryptFailed`.
+//
+// One interesting thing about this bug is that the above test does not reproduce it!
+// Question: what is the difference between the test environment and local environment that causes
+// one to fail, and the other not to?
+//
+// Question: what does the incoming side receive before returning `TagCheckDecryptFailed`?
+#[tokio::test(flavor = "multi_thread")]
+async fn test_establish_connection() {
+    reth_tracing::init_test_tracing();
+
+    // test goes here
+    todo!();
+}
+
 #[tokio::test(flavor = "multi_thread")]
 async fn test_already_connected() {
     reth_tracing::init_test_tracing();
