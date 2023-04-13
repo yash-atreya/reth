@@ -195,7 +195,10 @@ impl ECIES {
             &PublicKey::from_secret_key(SECP256K1, &secret_key).serialize_uncompressed(),
         );
 
+        trace!(target: "ecies", remote_public_key=?self.remote_public_key.unwrap(), secret_key=?self.secret_key, "Computing OUTGOING shared secret");
         let x = ecdh_x(&self.remote_public_key.unwrap(), &secret_key);
+        trace!(target: "ecies", ?x, "Computed OUTGOING shared secret");
+
         let mut key = [0u8; 32];
         kdf(x, &[], &mut key);
 
@@ -228,7 +231,10 @@ impl ECIES {
         let (iv, encrypted_data) = split_at_mut(data_iv, 16)?;
         let tag = H256::from_slice(tag_bytes);
 
+        trace!(target: "ecies", ?public_key, secret_key=?self.secret_key, "Computing INCOMING shared secret");
         let x = ecdh_x(&public_key, &self.secret_key);
+        trace!(target: "ecies", ?x, "Computed INCOMING shared secret");
+
         let mut key = [0u8; 32];
         kdf(x, &[], &mut key);
         let enc_key = H128::from_slice(&key[..16]);
@@ -781,5 +787,26 @@ mod tests {
 
         test_client.read_ack(&mut ack2.to_vec()).unwrap();
         test_client.read_ack(&mut ack3.to_vec()).unwrap();
+    }
+
+    // test data for TagCheckDecryptFailed
+    // INCOMING:
+    // reth_1        | 2023-04-13T04:13:55.112238Z TRACE incoming{peer="Some(172.18.0.1:57542)"}:decode{peer="None" state="Auth"}: parsing auth
+    // reth_1        | 2023-04-13T04:13:55.112396Z TRACE incoming{peer="Some(172.18.0.1:57542)"}:decode{peer="None" state="Auth"}:read_auth: Computing INCOMING HMAC-SHA256 tag mac_key=0x57c584c4d32ee6c02d1d4b2d67660d8ed89e1b652e02c5ed44151d6c263e76bf iv=[140, 104, 206, 248, 224, 231, 95, 171, 76, 95, 42, 230, 240, 172, 49, 176] auth_data=[1, 172]
+    // reth_1        | 2023-04-13T04:13:55.112408Z TRACE incoming{peer="Some(172.18.0.1:57542)"}:decode{peer="None" state="Auth"}:read_auth: Computed INCOMING check tag received=0x28e1a9bdaca8479d9f63cd0744c46bcf04cbb968263595e595dd98c85d9846d8 computed=0x451c88091fc114cb0cfe0380863a785380a4cdcff3aa82ca6c52df8b9f066434
+    // reth_1        | 2023-04-13T04:13:55.112622Z  WARN Incoming pending session failed remote_addr=172.18.0.1:57542 error=Some(Ecies(TagCheckDecryptFailed))
+    // OUTGOING:
+    // 2023-04-13T04:13:55.111307Z TRACE start_pending_outbound_session{remote_addr=127.0.0.1:30303}:connect{remote_id=0xbfb77df5e1485ea5c0ee1a936d402c090f12ac262bec62bef1df79d0af32cbfc571042c2a280142c073c80ebe97ccdd11e48bc200bfd28f4cbe56309150b65ef peer="Some(127.0.0.1:30303)"}: sending ecies auth ...
+    // 2023-04-13T04:13:55.111828Z TRACE start_pending_outbound_session{remote_addr=127.0.0.1:30303}:connect{remote_id=0xbfb77df5e1485ea5c0ee1a936d402c090f12ac262bec62bef1df79d0af32cbfc571042c2a280142c073c80ebe97ccdd11e48bc200bfd28f4cbe56309150b65ef peer="Some(127.0.0.1:30303)"}:encode{item=Auth peer="Some(\"0xbfb7…65ef\")" state="Auth"}: Computing OUTGOING HMAC-SHA256 tag mac_key=0x5ceedb5db054cbbd1d43b526e942274dbd47403f75a10629d14c814dda516401 iv=0x8c68cef8e0e75fab4c5f2ae6f0ac31b0 auth_data=[1, 172] total_size=428
+    // 2023-04-13T04:13:55.111851Z TRACE start_pending_outbound_session{remote_addr=127.0.0.1:30303}:connect{remote_id=0xbfb77df5e1485ea5c0ee1a936d402c090f12ac262bec62bef1df79d0af32cbfc571042c2a280142c073c80ebe97ccdd11e48bc200bfd28f4cbe56309150b65ef peer="Some(127.0.0.1:30303)"}:encode{item=Auth peer="Some(\"0xbfb7…65ef\")" state="Auth"}: Computed OUTGOING HMAC-SHA256 tag tag=0x28e1a9bdaca8479d9f63cd0744c46bcf04cbb968263595e595dd98c85d9846d8
+    #[test]
+    fn ecies_tagcheck_bug() {
+        // so: IV is properly sent
+        // auth data is properly sent [1, 172] = 0x01ac
+        // incoming MAC key:
+        //  * 0x57c584c4d32ee6c02d1d4b2d67660d8ed89e1b652e02c5ed44151d6c263e76bf
+        // outgoing MAC key:
+        //  * 0x5ceedb5db054cbbd1d43b526e942274dbd47403f75a10629d14c814dda516401
+        let _iv = [0x8cu8, 0x68, 0xce, 0xf8, 0xe0, 0xe7, 0x5f, 0xab, 0x4c, 0x5f, 0x2a, 0xe6, 0xf0, 0xac, 0x31, 0xb0];
     }
 }
