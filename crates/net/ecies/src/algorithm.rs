@@ -23,6 +23,7 @@ use secp256k1::{
 use sha2::Sha256;
 use sha3::Keccak256;
 use std::convert::TryFrom;
+use tracing::{error, trace};
 
 const PROTOCOL_VERSION: usize = 4;
 
@@ -225,14 +226,17 @@ impl ECIES {
         let (iv, encrypted_data) = split_at_mut(data_iv, 16)?;
         let tag = H256::from_slice(tag_bytes);
 
+        trace!(target: "net::ecies", remote_peer_pubkey=?public_key, "Computing shared key for incoming auth message");
         let x = ecdh_x(&public_key, &self.secret_key);
         let mut key = [0u8; 32];
         kdf(x, &[], &mut key);
         let enc_key = H128::from_slice(&key[..16]);
         let mac_key = sha256(&key[16..32]);
 
+        trace!(target: "net::ecies", "Computing HMAC tag for incoming auth data");
         let check_tag = hmac_sha256(mac_key.as_ref(), &[iv, encrypted_data], auth_data);
         if check_tag != tag {
+            error!(target: "net::ecies", remote_auth_tag=?tag, local_computed_tag=?check_tag, "Incoming auth packet failed HMAC tag check");
             return Err(ECIESErrorImpl::TagCheckDecryptFailed.into())
         }
 
