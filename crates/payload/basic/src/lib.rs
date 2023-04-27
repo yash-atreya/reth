@@ -578,6 +578,7 @@ fn build_payload<Pool, Client>(
 
         // calculate the state root
         let state_root = db.db.0.state_root(post_state)?;
+        trace!(?state_root, "Calculated state root for new payload");
 
         // create the block header
         let transactions_root = proofs::calculate_transaction_root(executed_txs.iter());
@@ -649,6 +650,7 @@ where
 
     // calculate the state root
     let state_root = db.db.0.state_root(post_state)?;
+    trace!(?state_root, "Calculated state root for new empty payload");
 
     let header = Header {
         parent_hash: parent_block.hash,

@@ -581,6 +581,7 @@ where
 
         // merkle tree
         {
+            tracing::trace!(target: "providers", ?range, ?end_block_hash, ?expected_state_root, "Calculating state root");
             let (state_root, trie_updates) =
                 StateRoot::incremental_root_with_updates(self.deref_mut(), range.clone())?;
             if state_root != expected_state_root {
@@ -981,6 +982,7 @@ where
             let parent_number = range.start().saturating_sub(1);
             let parent_state_root = self.get_header(parent_number)?.state_root;
 
+            tracing::trace!(target: "providers", ?range, ?new_state_root, ?parent_state_root, ?parent_number, "Calculated state root in get_take_block");
             // state root should be always correct as we are reverting state.
             // but for sake of double verification we will check it again.
             if new_state_root != parent_state_root {

@@ -588,6 +588,8 @@ impl<DB: Database, C: Consensus, EF: ExecutorFactory> BlockchainTree<DB, C, EF> 
         if new_canon_chain.fork_block_hash() == old_tip.hash {
             chain_action =
                 CanonStateNotification::Commit { new: Arc::new(new_canon_chain.clone()) };
+
+            trace!(target: "blockchain_tree", ?chain_action, ?new_canon_chain, "Canon chain commit");
             // append to database
             self.commit_canonical(new_canon_chain)?;
         } else {
@@ -599,6 +601,7 @@ impl<DB: Database, C: Consensus, EF: ExecutorFactory> BlockchainTree<DB, C, EF> 
                 unreachable!("all chains should point to canonical chain.");
             }
 
+            trace!(target: "blockchain_tree", ?new_canon_chain, ?canon_fork, "Reverting canonical chain");
             let old_canon_chain = self.revert_canonical(canon_fork.number)?;
 
             // state action
@@ -606,6 +609,8 @@ impl<DB: Database, C: Consensus, EF: ExecutorFactory> BlockchainTree<DB, C, EF> 
                 old: Arc::new(old_canon_chain.clone()),
                 new: Arc::new(new_canon_chain.clone()),
             };
+
+            trace!(target: "blockchain_tree", ?chain_action, ?new_canon_chain, "Reorg");
 
             // commit new canonical chain.
             self.commit_canonical(new_canon_chain)?;
@@ -643,6 +648,7 @@ impl<DB: Database, C: Consensus, EF: ExecutorFactory> BlockchainTree<DB, C, EF> 
 
     /// Unwind tables and put it inside state
     pub fn unwind(&mut self, unwind_to: BlockNumber) -> Result<(), Error> {
+        trace!(target: "blockchain_tree", ?unwind_to, "Unwinding to block number");
         // nothing to be done if unwind_to is higher then the tip
         if self.block_indices.canonical_tip().number <= unwind_to {
             return Ok(())
@@ -665,6 +671,7 @@ impl<DB: Database, C: Consensus, EF: ExecutorFactory> BlockchainTree<DB, C, EF> 
     ///
     /// The block, `revert_until`, is non-inclusive, i.e. `revert_until` stays in the database.
     fn revert_canonical(&mut self, revert_until: BlockNumber) -> Result<Chain, Error> {
+        trace!(target: "blockchain_tree", ?revert_until, "Reverting canonical chain");
         // read data that is needed for new sidechain
 
         let mut tx = Transaction::new(&self.externals.db)?;
