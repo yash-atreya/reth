@@ -11,6 +11,7 @@ use reth_interfaces::{provider::ProviderError, Result};
 use reth_primitives::{
     keccak256, Account, Address, BlockNumber, Bytecode, Bytes, StorageKey, StorageValue, H256,
 };
+use tracing::trace;
 use std::marker::PhantomData;
 
 /// State provider over latest state that takes tx reference.
@@ -57,6 +58,7 @@ impl<'a, 'b, TX: DbTx<'a>> BlockHashProvider for LatestStateProviderRef<'a, 'b, 
 
 impl<'a, 'b, TX: DbTx<'a>> StateRootProvider for LatestStateProviderRef<'a, 'b, TX> {
     fn state_root(&self, post_state: PostState) -> Result<H256> {
+        trace!(target: "providers", ?post_state, "Calculating state root for LatestStateProvider");
         post_state
             .state_root_slow(self.db)
             .map_err(|err| reth_interfaces::Error::Database(err.into()))

@@ -4,6 +4,7 @@ use crate::{
 };
 use reth_interfaces::{provider::ProviderError, Result};
 use reth_primitives::{Account, Address, BlockNumber, Bytecode, Bytes, H256, U256};
+use tracing::trace;
 
 /// A state provider that either resolves to data in a wrapped [`crate::PostState`], or an
 /// underlying state provider.
@@ -55,6 +56,7 @@ impl<SP: StateProvider, PSDP: PostStateDataProvider> StateRootProvider
     for PostStateProvider<SP, PSDP>
 {
     fn state_root(&self, post_state: PostState) -> Result<H256> {
+        trace!(target: "providers", ?post_state, "Calculating state root on PostStateProvider");
         let mut state = self.post_state_data_provider.state().clone();
         state.extend(post_state);
         self.state_provider.state_root(state)
