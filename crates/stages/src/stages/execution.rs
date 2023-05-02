@@ -1,4 +1,5 @@
 use crate::{ExecInput, ExecOutput, Stage, StageError, StageId, UnwindInput, UnwindOutput};
+use futures::{Future, Stream, StreamExt};
 use metrics_core::Gauge;
 use reth_db::{
     cursor::{DbCursorRO, DbCursorRW, DbDupCursorRO},
@@ -7,12 +8,24 @@ use reth_db::{
     tables,
     transaction::{DbTx, DbTxMut},
 };
+use reth_interfaces::executor;
 use reth_metrics_derive::Metrics;
-use reth_primitives::{Block, BlockNumber, BlockWithSenders, U256};
+use reth_primitives::{
+    proofs::calculate_receipt_root, Block, BlockNumber, BlockWithSenders, Bloom, ChainSpec,
+    Hardfork, Receipt, ReceiptWithBloom, H256, MAINNET, U256,
+};
 use reth_provider::{
     post_state::PostState, BlockExecutor, ExecutorFactory, LatestStateProviderRef, Transaction,
 };
-use std::time::Instant;
+use std::{
+    ops::RangeInclusive,
+    pin::Pin,
+    sync::mpsc::TryRecvError,
+    task::{ready, Context, Poll},
+    time::Instant,
+};
+use tokio::sync::mpsc::{self, UnboundedReceiver, UnboundedSender};
+use tokio_stream::wrappers::UnboundedReceiverStream;
 use tracing::*;
 
 /// The [`StageId`] of the execution stage.
@@ -24,6 +37,111 @@ pub const EXECUTION: StageId = StageId("Execution");
 pub struct ExecutionStageMetrics {
     /// The total amount of gas processed (in millions)
     mgas_processed_total: Gauge,
+}
+
+struct ReceiptVerifierHandle {
+    to_verifier: UnboundedSender<(BlockNumber, Vec<Receipt>, (H256, Bloom))>,
+    from_verifier: UnboundedReceiver<(BlockNumber, Result<(), executor::Error>)>,
+}
+
+struct ReceiptVerifier {
+    incoming_rx: UnboundedReceiverStream<(BlockNumber, Vec<Receipt>, (H256, Bloom))>,
+    outgoing_tx: UnboundedSender<(BlockNumber, Result<(), executor::Error>)>,
+    chain_spec: ChainSpec,
+    max_block: BlockNumber,
+    finished: bool,
+}
+
+impl ReceiptVerifier {
+    fn new(
+        incoming_rx: UnboundedReceiverStream<(BlockNumber, Vec<Receipt>, (H256, Bloom))>,
+        outgoing_tx: UnboundedSender<(BlockNumber, Result<(), executor::Error>)>,
+        chain_spec: ChainSpec,
+        max_block: BlockNumber,
+    ) -> Self {
+        Self { incoming_rx, outgoing_tx, chain_spec, max_block, finished: false }
+    }
+
+    fn verify_receipt(
+        &self,
+        block: BlockNumber,
+        receipts: Vec<Receipt>,
+        expected: (H256, Bloom),
+    ) -> Result<(), executor::Error> {
+        let (expected_receipts_root, expected_logs_bloom) = expected;
+        if !self.chain_spec.fork(Hardfork::Byzantium).active_at_block(block) {
+            return Ok(())
+        }
+
+        let receipts_with_bloom =
+            receipts.into_iter().map(|r| r.into()).collect::<Vec<ReceiptWithBloom>>();
+        let receipts_root = calculate_receipt_root(&receipts_with_bloom);
+        if receipts_root != expected_receipts_root {
+            return Err(executor::Error::ReceiptRootDiff {
+                got: receipts_root,
+                expected: expected_receipts_root,
+            })
+        }
+
+        let logs_bloom = receipts_with_bloom.iter().fold(Bloom::zero(), |bloom, r| bloom | r.bloom);
+        if logs_bloom != expected_logs_bloom {
+            return Err(executor::Error::BloomLogDiff {
+                expected: Box::new(expected_logs_bloom),
+                got: Box::new(logs_bloom),
+            })
+        }
+
+        Ok(())
+    }
+
+    fn build(chain_spec: ChainSpec, max_block: BlockNumber) -> (Self, ReceiptVerifierHandle) {
+        let (incoming_tx, incoming_rx) = mpsc::unbounded_channel();
+        let (outgoing_tx, outgoing_rx) = mpsc::unbounded_channel();
+
+        let verifier = Self::new(
+            UnboundedReceiverStream::new(incoming_rx),
+            outgoing_tx,
+            chain_spec,
+            max_block,
+        );
+
+        let handle = ReceiptVerifierHandle { to_verifier: incoming_tx, from_verifier: outgoing_rx };
+
+        (verifier, handle)
+    }
+}
+
+impl Future for ReceiptVerifier {
+    type Output = ();
+
+    fn poll(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Self::Output> {
+        let this = self.get_mut();
+
+        loop {
+            if this.finished {
+                return Poll::Ready(())
+            }
+
+            match ready!(this.incoming_rx.poll_next_unpin(cx)) {
+                Some((block, receipts, expected)) => {
+                    if block == this.max_block {
+                        this.finished = true;
+                    }
+
+                    let result = this.verify_receipt(block, receipts, expected);
+                    this.outgoing_tx.send((block, result)).expect("failed to send result");
+
+                    if !this.chain_spec.fork(Hardfork::Byzantium).active_at_block(block) {
+                        this.outgoing_tx.send((block, Ok(()))).unwrap();
+                        continue
+                    }
+                }
+                None => {
+                    this.finished = true;
+                }
+            };
+        }
+    }
 }
 
 /// The execution stage executes all transactions and
@@ -106,10 +224,10 @@ impl<EF: ExecutorFactory> ExecutionStage<EF> {
     pub fn execute_inner<DB: Database>(
         &self,
         tx: &mut Transaction<'_, DB>,
-        input: ExecInput,
+        range: RangeInclusive<BlockNumber>,
+        is_final_range: bool,
+        handle: ReceiptVerifierHandle,
     ) -> Result<ExecOutput, StageError> {
-        let (range, is_final_range) = input.next_block_range_with_threshold(self.commit_threshold);
-
         // Create state provider with cached state
         let mut executor = self.executor_factory.with_sp(LatestStateProviderRef::new(&**tx));
 
@@ -122,8 +240,23 @@ impl<EF: ExecutorFactory> ExecutionStage<EF> {
             trace!(target: "sync::stages::execution", number = block_number, txs = block.body.len(), "Executing block");
             let (block, senders) = block.into_components();
             let block_state = executor
-                .execute_and_verify_receipt(&block, td, Some(senders))
+                .execute(&block, td, Some(senders))
                 .map_err(|error| StageError::ExecutionError { block: block_number, error })?;
+
+            // Verify receipts
+            handle
+                .to_verifier
+                .send((
+                    block.number,
+                    block_state.receipts().to_vec(),
+                    (block.receipts_root, block.logs_bloom),
+                ))
+                .expect("failed to send receipts to verifier");
+
+            if let Some((block, result)) = handle.from_verifier.recv() {
+                result.map_err(|error| StageError::ExecutionError { block, error })?;
+            }
+
             if let Some(last_receipt) = block_state.receipts().last() {
                 self.metrics
                     .mgas_processed_total
@@ -162,6 +295,11 @@ impl<EF: ExecutorFactory, DB: Database> Stage<DB> for ExecutionStage<EF> {
         tx: &mut Transaction<'_, DB>,
         input: ExecInput,
     ) -> Result<ExecOutput, StageError> {
+        let (range, is_final_range) = input.next_block_range_with_threshold(self.commit_threshold);
+        let (verifier, handle) = ReceiptVerifier::build(MAINNET.clone(), *range.end());
+
+        let verifier_thread_handle = tokio::spawn(verifier);
+
         // For Ethereum transactions that reaches the max call depth (1024) revm can use more stack
         // space than what is allocated by default.
         //
@@ -171,16 +309,20 @@ impl<EF: ExecutorFactory, DB: Database> Stage<DB> for ExecutionStage<EF> {
         // to optimize revm or move data to the heap.
         //
         // See https://github.com/bluealloy/revm/issues/305
-        std::thread::scope(|scope| {
+        let result = std::thread::scope(|scope| {
             let handle = std::thread::Builder::new()
                 .stack_size(BIG_STACK_SIZE)
                 .spawn_scoped(scope, || {
                     // execute and store output to results
-                    self.execute_inner(tx, input)
+                    self.execute_inner(tx, range, is_final_range, handle)
                 })
                 .expect("Expects that thread name is not null");
             handle.join().expect("Expects for thread to not panic")
-        })
+        });
+
+        verifier_thread_handle.await.expect("Expects verifier thread to not panic");
+
+        result
     }
 
     /// Unwind the stage.

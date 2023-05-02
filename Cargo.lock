@@ -5400,6 +5400,7 @@ dependencies = [
  "assert_matches",
  "async-trait",
  "criterion",
+ "futures",
  "futures-util",
  "itertools",
  "metrics",
