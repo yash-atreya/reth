@@ -1,5 +1,5 @@
 use crate::{ExecInput, ExecOutput, Stage, StageError, StageId, UnwindInput, UnwindOutput};
-use futures::{Future, Stream, StreamExt};
+use futures::{Future, StreamExt};
 use metrics_core::Gauge;
 use reth_db::{
     cursor::{DbCursorRO, DbCursorRW, DbDupCursorRO},
@@ -20,11 +20,10 @@ use reth_provider::{
 use std::{
     ops::RangeInclusive,
     pin::Pin,
-    sync::mpsc::TryRecvError,
     task::{ready, Context, Poll},
     time::Instant,
 };
-use tokio::sync::mpsc::{self, UnboundedReceiver, UnboundedSender};
+use tokio::sync::mpsc::{self, error::TryRecvError, UnboundedReceiver, UnboundedSender};
 use tokio_stream::wrappers::UnboundedReceiverStream;
 use tracing::*;
 
@@ -39,7 +38,7 @@ pub struct ExecutionStageMetrics {
     mgas_processed_total: Gauge,
 }
 
-struct ReceiptVerifierHandle {
+pub struct ReceiptVerifierHandle {
     to_verifier: UnboundedSender<(BlockNumber, Vec<Receipt>, (H256, Bloom))>,
     from_verifier: UnboundedReceiver<(BlockNumber, Result<(), executor::Error>)>,
 }
@@ -129,12 +128,7 @@ impl Future for ReceiptVerifier {
                     }
 
                     let result = this.verify_receipt(block, receipts, expected);
-                    this.outgoing_tx.send((block, result)).expect("failed to send result");
-
-                    if !this.chain_spec.fork(Hardfork::Byzantium).active_at_block(block) {
-                        this.outgoing_tx.send((block, Ok(()))).unwrap();
-                        continue
-                    }
+                    this.outgoing_tx.send((block, result)).unwrap();
                 }
                 None => {
                     this.finished = true;
@@ -226,7 +220,7 @@ impl<EF: ExecutorFactory> ExecutionStage<EF> {
         tx: &mut Transaction<'_, DB>,
         range: RangeInclusive<BlockNumber>,
         is_final_range: bool,
-        handle: ReceiptVerifierHandle,
+        handle: &mut ReceiptVerifierHandle,
     ) -> Result<ExecOutput, StageError> {
         // Create state provider with cached state
         let mut executor = self.executor_factory.with_sp(LatestStateProviderRef::new(&**tx));
@@ -253,8 +247,13 @@ impl<EF: ExecutorFactory> ExecutionStage<EF> {
                 ))
                 .expect("failed to send receipts to verifier");
 
-            if let Some((block, result)) = handle.from_verifier.recv() {
-                result.map_err(|error| StageError::ExecutionError { block, error })?;
+            match handle.from_verifier.try_recv() {
+                Ok((block, result)) => {
+                    trace!(target: "sync::stages::execution", number = block, "Verified receipts");
+                    result.map_err(|error| StageError::ExecutionError { block, error })?
+                }
+                Err(TryRecvError::Empty) => (),
+                Err(TryRecvError::Disconnected) => return Err(StageError::ChannelClosed),
             }
 
             if let Some(last_receipt) = block_state.receipts().last() {
@@ -296,7 +295,7 @@ impl<EF: ExecutorFactory, DB: Database> Stage<DB> for ExecutionStage<EF> {
         input: ExecInput,
     ) -> Result<ExecOutput, StageError> {
         let (range, is_final_range) = input.next_block_range_with_threshold(self.commit_threshold);
-        let (verifier, handle) = ReceiptVerifier::build(MAINNET.clone(), *range.end());
+        let (verifier, mut handle) = ReceiptVerifier::build(MAINNET.clone(), *range.end());
 
         let verifier_thread_handle = tokio::spawn(verifier);
 
@@ -314,11 +313,22 @@ impl<EF: ExecutorFactory, DB: Database> Stage<DB> for ExecutionStage<EF> {
                 .stack_size(BIG_STACK_SIZE)
                 .spawn_scoped(scope, || {
                     // execute and store output to results
-                    self.execute_inner(tx, range, is_final_range, handle)
+                    self.execute_inner(tx, range, is_final_range, &mut handle)
                 })
                 .expect("Expects that thread name is not null");
             handle.join().expect("Expects for thread to not panic")
         });
+
+        match &result {
+            Ok(_) => {
+                // drain the rest
+                while let Some((block, result)) = handle.from_verifier.recv().await {
+                    trace!(target: "sync::stages::execution", number = block, "Verified receipts");
+                    result.map_err(|error| StageError::ExecutionError { block, error })?
+                }
+            }
+            Err(_) => drop(handle),
+        }
 
         verifier_thread_handle.await.expect("Expects verifier thread to not panic");
 
