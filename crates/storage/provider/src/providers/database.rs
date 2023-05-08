@@ -252,9 +252,11 @@ impl<DB: Database> TransactionsProvider for ShareableDatabase<DB> {
                         if let Some(block_number) =
                             transaction_cursor.seek(transaction_id).map(|b| b.map(|(_, bn)| bn))?
                         {
+                            trace!(target: "rpc", ?block_number, "Got block number for transaction");
                             if let Some((header, block_hash)) =
                                 read_sealed_header(tx, block_number)?
                             {
+                                trace!(target: "rpc", ?header, ?block_hash, "Got header for transaction");
                                 if let Some(block_body) =
                                     tx.get::<tables::BlockBodyIndices>(block_number)?
                                 {

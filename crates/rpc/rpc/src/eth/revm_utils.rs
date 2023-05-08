@@ -121,6 +121,7 @@ where
     I: IntoIterator<Item = Tx>,
     Tx: FillableTransaction,
 {
+    tracing::trace!(target: "rpc", ?block_env, "Replaying transactions");
     let env = Env { cfg, block: block_env, tx: TxEnv::default() };
     let mut evm = revm::EVM::with_env(env);
     evm.database(db);

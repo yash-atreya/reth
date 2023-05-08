@@ -500,10 +500,12 @@ where
     where
         F: FnOnce(TransactionInfo, TracingInspector, ResultAndState) -> EthResult<R> + Send,
     {
+        tracing::trace!(target: "rpc", ?hash, "Tracing transaction in block");
         let (transaction, block) = match self.transaction_and_block(hash).await? {
             None => return Ok(None),
             Some(res) => res,
         };
+        tracing::trace!(target: "rpc", ?transaction, ?block, "Got transaction and block");
         let (tx, tx_info) = transaction.split();
 
         let (cfg, block_env, _) = self.evm_env_at(block.hash.into()).await?;
