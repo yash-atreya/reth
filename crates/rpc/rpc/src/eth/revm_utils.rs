@@ -131,6 +131,8 @@ where
         }
 
         tx.try_fill_tx_env(&mut evm.env.tx)?;
+
+        tracing::trace!(target: "rpc", current=?tx.hash(), ?target_tx_hash, "Replaying transaction until target");
         let res = evm.transact()?;
         evm.db.as_mut().expect("is set").commit(res.state)
     }
