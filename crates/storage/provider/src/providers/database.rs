@@ -246,7 +246,9 @@ impl<DB: Database> TransactionsProvider for ShareableDatabase<DB> {
         self.db
             .view(|tx| -> Result<_> {
                 if let Some(transaction_id) = tx.get::<tables::TxHashNumber>(tx_hash)? {
+                    trace!(target: "rpc", ?transaction_id, "Got transaction id for hash");
                     if let Some(transaction) = tx.get::<tables::Transactions>(transaction_id)? {
+                        trace!(target: "rpc", ?transaction, "Got transaction for id");
                         let mut transaction_cursor =
                             tx.cursor_read::<tables::TransactionBlock>()?;
                         if let Some(block_number) =
