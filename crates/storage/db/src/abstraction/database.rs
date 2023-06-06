@@ -85,3 +85,36 @@ impl<DB: Database> Database for &DB {
         <DB as Database>::tx_mut(self)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::{super::mock::*, *};
+
+    async fn f2<'a, DB>(b: &mut <DB as DatabaseGAT<'a>>::TXMut) -> Option<u8>
+    where
+        DB: Database,
+        <DB as DatabaseGAT<'a>>::TXMut: Send,
+    {
+        Some(1)
+    }
+
+    async fn f1<'a, DB>(b: &mut <DB as DatabaseGAT<'a>>::TXMut) -> Option<u8>
+    where
+        DB: Database,
+        <DB as DatabaseGAT<'a>>::TXMut: Send,
+    {
+        f2::<DB>(b).await
+    }
+
+    #[tokio::test]
+    async fn high_level_failure() {
+        let db = DatabaseMock::default();
+
+        let mut tx = db.tx_mut().unwrap();
+
+        // removing `tokio::spawn` OR `f2 call inside f1` lets it compile
+        tokio::spawn(async move {
+            f1::<DatabaseMock>(&mut tx).await;
+        });
+    }
+}
