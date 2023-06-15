@@ -637,6 +637,9 @@ where
             match this.swarm.poll_next_unpin(cx) {
                 Poll::Pending | Poll::Ready(None) => break,
                 Poll::Ready(Some(event)) => {
+                    // update bytes metrics
+                    this.update_byte_metrics();
+
                     // handle event
                     match event {
                         SwarmEvent::ValidMessage { peer_id, message } => {
