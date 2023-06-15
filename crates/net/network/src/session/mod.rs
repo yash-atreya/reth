@@ -163,6 +163,16 @@ impl SessionManager {
         self.hello_message.clone()
     }
 
+    /// Returns bandwidth meter total inbound bytes
+    pub(crate) fn total_inbound(&self) -> u64 {
+        self.bandwidth_meter.total_inbound()
+    }
+
+    /// Returns bandwidth meter total outbound bytes
+    pub(crate) fn total_outbound(&self) -> u64 {
+        self.bandwidth_meter.total_outbound()
+    }
+
     /// Spawns the given future onto a new task that is tracked in the `spawned_tasks`
     /// [`JoinSet`](tokio::task::JoinSet).
     fn spawn<F>(&self, f: F)

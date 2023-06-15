@@ -306,6 +306,14 @@ where
         self.swarm.state().num_active_peers()
     }
 
+    /// Updates the inbound bytes read and outbound bytes written
+    pub fn update_byte_metrics(&self) {
+        let inbound = self.swarm.total_inbound();
+        self.metrics.total_inbound_bytes.set(inbound as f64);
+        let outbound = self.swarm.total_outbound();
+        self.metrics.total_outbound_bytes.set(outbound as f64);
+    }
+
     /// Returns the [`PeerId`] used in the network.
     pub fn peer_id(&self) -> &PeerId {
         self.handle.peer_id()

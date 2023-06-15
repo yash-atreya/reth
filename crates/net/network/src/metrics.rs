@@ -43,6 +43,12 @@ pub struct NetworkMetrics {
 
     /// Number of Eth Requests dropped due to channel being at full capacity
     pub(crate) total_dropped_eth_requests_at_full_capacity: Counter,
+
+    /// Total inbound bytes read
+    pub(crate) total_inbound_bytes: Gauge,
+
+    /// Total outbound bytes sent
+    pub(crate) total_outbound_bytes: Gauge,
 }
 
 /// Metrics for the TransactionsManager

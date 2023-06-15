@@ -277,6 +277,16 @@ where
         None
     }
 
+    /// Return total inbound bytes read
+    pub(crate) fn total_inbound(&self) -> u64 {
+        self.sessions.total_inbound()
+    }
+
+    /// Return total outbound bytes written
+    pub(crate) fn total_outbound(&self) -> u64 {
+        self.sessions.total_outbound()
+    }
+
     /// Set network connection state to `ShuttingDown`
     pub(crate) fn on_shutdown_requested(&mut self) {
         self.net_connection_state = NetworkConnectionState::ShuttingDown;
