@@ -161,6 +161,12 @@ where
         max_dynamic.min(self.max_concurrent_requests)
     }
 
+    /// Updates the size of the queued validated headers metric
+    fn update_queued_validated_metric(&self) {
+        let queued_validated_len = self.queued_validated_headers.len();
+        self.metrics.queued_validated_headers.set(queued_validated_len as f64);
+    }
+
     /// Returns the next header request
     ///
     /// This will advance the current block towards the local head.
@@ -299,6 +305,7 @@ where
         self.next_chain_tip_block_number =
             validated.last().expect("exists").number.saturating_sub(1);
         self.queued_validated_headers.extend(validated);
+        self.update_queued_validated_metric();
 
         Ok(())
     }
@@ -333,6 +340,7 @@ where
                     .count();
                 // removes all headers that are higher than current target
                 self.queued_validated_headers.drain(..skip);
+                self.update_queued_validated_metric();
             }
         } else {
             // this occurs on the initial sync target request
@@ -419,6 +427,7 @@ where
                 self.on_block_number_update(target.number, parent_block_number);
 
                 self.queued_validated_headers.push(target);
+                self.update_queued_validated_metric();
 
                 // try to validate all buffered responses blocked by this successful response
                 self.try_validate_buffered()
@@ -609,6 +618,7 @@ where
 
         self.metrics.in_flight_requests.set(0.);
         self.metrics.buffered_responses.set(0.);
+        self.metrics.queued_validated_headers.set(0.);
     }
 
     /// Splits off the next batch of headers
@@ -616,6 +626,7 @@ where
         let batch_size = self.stream_batch_size.min(self.queued_validated_headers.len());
         let mut rem = self.queued_validated_headers.split_off(batch_size);
         std::mem::swap(&mut rem, &mut self.queued_validated_headers);
+        self.update_queued_validated_metric();
         rem
     }
 }
@@ -655,6 +666,8 @@ where
             // headers are sorted high to low
             self.queued_validated_headers.pop();
         }
+        // update metric
+        self.update_queued_validated_metric();
         // update the local head
         self.local_head = Some(head);
     }
