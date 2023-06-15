@@ -164,7 +164,9 @@ where
     /// Updates the size of the queued validated headers metric
     fn update_queued_validated_metric(&self) {
         let queued_validated_len = self.queued_validated_headers.len();
+        let queued_validated_size = queued_validated_len * std::mem::size_of::<SealedHeader>();
         self.metrics.queued_validated_headers.set(queued_validated_len as f64);
+        self.metrics.queued_validated_headers_size.set(queued_validated_size as f64);
     }
 
     /// Returns the next header request

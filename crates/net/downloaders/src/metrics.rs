@@ -40,6 +40,8 @@ pub struct DownloaderMetrics {
     pub queued_blocks: Gauge,
     /// The number of queued and validated headers
     pub queued_validated_headers: Gauge,
+    /// The size in bytes of the queued and validated headers vec
+    pub queued_validated_headers_size: Gauge,
     /// The number of out-of-order requests sent by the downloader.
     /// The consumer of the download stream is able to re-request data (headers or bodies) in case
     /// it encountered a recoverable error (e.g. during insertion).
