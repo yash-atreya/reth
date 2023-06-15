@@ -629,6 +629,10 @@ where
         let mut rem = self.queued_validated_headers.split_off(batch_size);
         std::mem::swap(&mut rem, &mut self.queued_validated_headers);
         self.update_queued_validated_metric();
+        // guessing a large capacity queued_validated_headers will alloc another large capacity rem
+        // with `split_off` so we shrink both to fit
+        rem.shrink_to_fit();
+        self.queued_validated_headers.shrink_to_fit();
         rem
     }
 }
