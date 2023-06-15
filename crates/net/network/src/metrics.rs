@@ -17,6 +17,9 @@ pub struct NetworkMetrics {
     /// Number of peers known to the node
     pub(crate) tracked_peers: Gauge,
 
+    /// Number of incoming transaction events sent to the transaction manager
+    pub(crate) incoming_transaction_events: Counter,
+
     /// Cumulative number of failures of pending sessions
     pub(crate) pending_session_failures: Counter,
 
@@ -54,6 +57,8 @@ pub struct TransactionsManagerMetrics {
     pub(crate) messages_with_already_seen_hashes: Counter,
     /// Total number of messages with already seen full transactions
     pub(crate) messages_with_already_seen_transactions: Counter,
+    /// Total number of transaction events read
+    pub(crate) transaction_events_read: Counter,
 }
 
 /// Metrics for Disconnection types

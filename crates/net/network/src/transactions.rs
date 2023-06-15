@@ -325,6 +325,7 @@ where
 
     /// Handles dedicated transaction events related to the `eth` protocol.
     fn on_network_tx_event(&mut self, event: NetworkTransactionEvent) {
+        self.metrics.transaction_events_read.increment(1);
         match event {
             NetworkTransactionEvent::IncomingTransactions { peer_id, msg } => {
                 self.import_transactions(peer_id, msg.0, TransactionSource::Broadcast);

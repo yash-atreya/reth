@@ -366,6 +366,7 @@ where
     /// configured.
     fn notify_tx_manager(&self, event: NetworkTransactionEvent) {
         if let Some(ref tx) = self.to_transactions_manager {
+            self.metrics.incoming_transaction_events.increment(1);
             let _ = tx.send(event);
         }
     }
