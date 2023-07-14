@@ -359,11 +359,13 @@ impl<'this, TX: DbTxMut<'this> + DbTx<'this>> DatabaseProvider<'this, TX> {
         // loop break if we are at the end of the blocks.
         for (block_number, block_body) in block_bodies.into_iter() {
             for _ in block_body.tx_num_range() {
-                if let Some((_, receipt)) = receipt_iter.next() {
-                    block_states
-                        .entry(block_number)
-                        .or_default()
-                        .add_receipt(block_number, receipt);
+                if let Some((tx_number, receipt)) = receipt_iter.next() {
+                    let receipt_index = tx_number - block_body.first_tx_num;
+                    block_states.entry(block_number).or_default().insert_receipt(
+                        block_number,
+                        receipt_index as usize,
+                        receipt,
+                    );
                 }
             }
         }

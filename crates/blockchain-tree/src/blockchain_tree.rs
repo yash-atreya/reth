@@ -22,9 +22,10 @@ use reth_primitives::{
 use reth_provider::{
     chain::{ChainSplit, SplitAt},
     post_state::PostState,
-    BlockExecutionWriter, BlockNumReader, BlockWriter, CanonStateNotification,
+    providers::PostStateProvider,
+    BlockExecutionWriter, BlockExecutor, BlockNumReader, BlockWriter, CanonStateNotification,
     CanonStateNotificationSender, CanonStateNotifications, Chain, DatabaseProvider,
-    DisplayBlocksChain, ExecutorFactory, HeaderProvider,
+    DisplayBlocksChain, ExecutorFactory, HeaderProvider, HistoricalStateProvider,
 };
 use reth_stages::{MetricEvent, MetricEventsSender};
 use std::{
@@ -1080,11 +1081,35 @@ impl<DB: Database, C: Consensus, EF: ExecutorFactory> BlockchainTree<DB, C, EF> 
         let revert_range = (revert_until + 1)..=tip;
         info!(target: "blockchain_tree", "Unwinding canonical chain blocks: {:?}", revert_range);
         // read block and execution result from database. and remove traces of block from tables.
-        let blocks_and_execution = provider
+        let mut blocks_and_execution = provider
             .take_block_and_execution_range(self.externals.chain_spec.as_ref(), revert_range)
             .map_err(|e| BlockExecutionError::CanonicalRevert { inner: e.to_string() })?;
 
         provider.commit()?;
+
+        for i in 0..blocks_and_execution.len() {
+            let (block, post_state) = &blocks_and_execution[i];
+            for (tx_index, _) in block.body.iter().enumerate() {
+                if post_state.receipt(block.number, tx_index).is_none() {
+                    let (block, post_state) = blocks_and_execution.remove(i);
+
+                    let state_provider =
+                        HistoricalStateProvider::new(self.externals.db.tx()?, block.number);
+                    let post_state_data_provider = PostStateData {
+                        canonical_fork: ForkBlock { number: block.number, hash: block.hash },
+                        state: post_state,
+                        parent_block_hashed: self.canonical_chain().inner().clone(),
+                    };
+                    let provider = PostStateProvider::new(state_provider, post_state_data_provider);
+                    let mut executor = self.externals.executor_factory.with_sp(&provider);
+
+                    let post_state =
+                        executor.execute(&block.block.clone().unseal(), U256::MAX, None)?;
+                    blocks_and_execution.insert(i, (block, post_state));
+                    break
+                }
+            }
+        }
 
         if blocks_and_execution.is_empty() {
             Ok(None)

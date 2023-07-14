@@ -177,6 +177,10 @@ impl PostState {
         self.receipts.get(&block).map(Vec::as_slice).unwrap_or(&[])
     }
 
+    pub fn receipt(&self, block: BlockNumber, index: usize) -> Option<&Receipt> {
+        self.receipts.get(&block).map(Vec::as_slice).unwrap_or(&[]).get(index)
+    }
+
     /// Returns an iterator over all logs in this [PostState].
     pub fn logs(&self, block: BlockNumber) -> impl Iterator<Item = &Log> {
         self.receipts(block).iter().flat_map(|r| r.logs.iter())
@@ -512,6 +516,10 @@ impl PostState {
     /// Transactions should always include their receipts in the post-state.
     pub fn add_receipt(&mut self, block: BlockNumber, receipt: Receipt) {
         self.receipts.entry(block).or_default().push(receipt);
+    }
+
+    pub fn insert_receipt(&mut self, block: BlockNumber, index: usize, receipt: Receipt) {
+        self.receipts.entry(block).or_default().insert(index, receipt);
     }
 
     /// Write changeset history to the database.
