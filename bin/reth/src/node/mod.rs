@@ -346,6 +346,7 @@ impl Command {
 
             (pipeline, EitherDownloader::Right(network_client))
         };
+        pipeline.register_metrics()?;
 
         let pipeline_events = pipeline.events();
 
