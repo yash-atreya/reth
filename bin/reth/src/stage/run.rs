@@ -274,6 +274,10 @@ impl Command {
             }
         }
 
+        if self.commit {
+            provider_rw.commit()?;
+        }
+
         Ok(())
     }
 }
