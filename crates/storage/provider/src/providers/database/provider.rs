@@ -9,6 +9,7 @@ use crate::{
     TransactionsProvider, WithdrawalsProvider,
 };
 use itertools::{izip, Itertools};
+use rayon::{iter::ParallelIterator, prelude::IntoParallelIterator, slice::ParallelSliceMut};
 use reth_db::{
     common::KeyValue,
     cursor::{DbCursorRO, DbCursorRW, DbDupCursorRO},
@@ -1491,23 +1492,32 @@ impl<'this, TX: DbTxMut<'this> + DbTx<'this>> HashingWriter for DatabaseProvider
 
     fn insert_storage_for_hashing(
         &self,
-        storages: impl IntoIterator<Item = (Address, impl IntoIterator<Item = StorageEntry>)>,
+        storages: impl IntoParallelIterator<
+            Item = (Address, impl IntoParallelIterator<Item = StorageEntry>),
+        >,
     ) -> Result<HashMap<H256, BTreeSet<H256>>> {
-        // hash values
-        let hashed_storages =
-            storages.into_iter().fold(BTreeMap::new(), |mut map, (address, storage)| {
-                let storage = storage.into_iter().fold(BTreeMap::new(), |mut map, entry| {
-                    map.insert(keccak256(entry.key), entry.value);
-                    map
-                });
-                map.insert(keccak256(address), storage);
-                map
-            });
+        let (hashed_storage_keys, mut hashed_storages): (
+            HashMap<H256, BTreeSet<H256>>,
+            Vec<(H256, Vec<(H256, U256)>)>,
+        ) = storages
+            .into_par_iter()
+            .map(|(address, storage)| {
+                let (storage_set, mut storage): (BTreeSet<H256>, Vec<(H256, U256)>) = storage
+                    .into_par_iter()
+                    .map(|entry| {
+                        let key = keccak256(entry.key);
+                        (key, (key, entry.value))
+                    })
+                    .unzip();
 
-        let hashed_storage_keys =
-            HashMap::from_iter(hashed_storages.iter().map(|(hashed_address, entries)| {
-                (*hashed_address, BTreeSet::from_iter(entries.keys().copied()))
-            }));
+                storage.par_sort_unstable_by(|a, b| a.0.cmp(&b.0));
+
+                let hashed_addr = keccak256(address);
+                ((hashed_addr, storage_set), (hashed_addr, storage))
+            })
+            .unzip();
+
+        hashed_storages.par_sort_unstable_by(|a, b| a.0.cmp(&b.0));
 
         let mut hashed_storage_cursor = self.tx.cursor_dup_write::<tables::HashedStorage>()?;
         // Hash the address and key and apply them to HashedStorage (if Storage is None
@@ -1576,19 +1586,22 @@ impl<'this, TX: DbTxMut<'this> + DbTx<'this>> HashingWriter for DatabaseProvider
 
     fn insert_account_for_hashing(
         &self,
-        accounts: impl IntoIterator<Item = (Address, Option<Account>)>,
+        accounts: impl IntoParallelIterator<Item = (Address, Option<Account>)>,
     ) -> Result<BTreeSet<H256>> {
         let mut hashed_accounts_cursor = self.tx.cursor_write::<tables::HashedAccount>()?;
 
-        let hashed_accounts = accounts.into_iter().fold(
-            BTreeMap::new(),
-            |mut map: BTreeMap<H256, Option<Account>>, (address, account)| {
-                map.insert(keccak256(address), account);
-                map
-            },
-        );
+        let (hashed_addresses, mut hashed_accounts): (
+            BTreeSet<H256>,
+            Vec<(H256, Option<Account>)>,
+        ) = accounts
+            .into_par_iter()
+            .map(|(addr, acc)| {
+                let key = keccak256(addr);
+                (key, (key, acc))
+            })
+            .unzip();
 
-        let hashed_addresses = BTreeSet::from_iter(hashed_accounts.keys().copied());
+        hashed_accounts.par_sort_unstable_by(|a, b| a.0.cmp(&b.0));
 
         hashed_accounts.into_iter().try_for_each(|(hashed_address, account)| -> Result<()> {
             if let Some(account) = account {

@@ -1,4 +1,5 @@
 //! Reth genesis initialization utility functions.
+use rayon::{iter::ParallelIterator, prelude::IntoParallelIterator};
 use reth_db::{
     cursor::DbCursorRO,
     database::{Database, DatabaseGAT},
@@ -121,15 +122,17 @@ pub fn insert_genesis_hashes<DB: Database>(
 ) -> Result<(), InitDatabaseError> {
     // insert and hash accounts to hashing table
     let alloc_accounts =
-        genesis.alloc.clone().into_iter().map(|(addr, account)| (addr, Some(account.into())));
+        genesis.alloc.clone().into_par_iter().map(|(addr, account)| (addr, Some(account.into())));
     provider.insert_account_for_hashing(alloc_accounts)?;
 
-    let alloc_storage = genesis.alloc.clone().into_iter().filter_map(|(addr, account)| {
+    let alloc_storage = genesis.alloc.clone().into_par_iter().filter_map(|(addr, account)| {
         // only return Some if there is storage
         account.storage.map(|storage| {
             (
                 addr,
-                storage.into_iter().map(|(key, value)| StorageEntry { key, value: value.into() }),
+                storage
+                    .into_par_iter()
+                    .map(|(key, value)| StorageEntry { key, value: value.into() }),
             )
         })
     });
