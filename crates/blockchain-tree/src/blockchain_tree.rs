@@ -237,8 +237,19 @@ impl<DB: Database, C: Consensus, EF: ExecutorFactory> BlockchainTree<DB, C, EF> 
     }
 
     /// Returns true if the block is included in a side-chain.
+    ///
+    /// Cuation: This will not return true for blocks from the canonical chain
     fn is_block_hash_inside_chain(&self, block_hash: BlockHash) -> bool {
         self.block_by_hash(block_hash).is_some()
+    }
+
+    /// Returns true if the block is included in a side-chain or if it is in the blockchain tree's
+    /// canonical chain.
+    ///
+    /// This does not check the database for the block.
+    pub fn is_block_in_tree(&self, block_hash: BlockHash) -> bool {
+        self.block_indices.is_block_hash_canonical(&block_hash) ||
+            self.is_block_hash_inside_chain(block_hash)
     }
 
     /// Returns the block that's considered the `Pending` block, if it exists.
@@ -352,13 +363,12 @@ impl<DB: Database, C: Consensus, EF: ExecutorFactory> BlockchainTree<DB, C, EF> 
         // find the lowest ancestor of the block in the buffer to return as the missing parent
         // this shouldn't return None because that only happens if the block was evicted, which
         // shouldn't happen right after insertion
-        let lowest_ancestor =
-            self.buffered_blocks.lowest_ancestor(&block.hash).ok_or_else(|| {
-                InsertBlockError::tree_error(
-                    BlockchainTreeError::BlockBufferingFailed { block_hash: block.hash },
-                    block.block,
-                )
-            })?;
+        let lowest_ancestor = self.lowest_buffered_ancestor(&block.hash).ok_or_else(|| {
+            InsertBlockError::tree_error(
+                BlockchainTreeError::BlockBufferingFailed { block_hash: block.hash },
+                block.block,
+            )
+        })?;
 
         Ok(BlockStatus::Disconnected { missing_ancestor: lowest_ancestor.parent_num_hash() })
     }
@@ -607,8 +617,22 @@ impl<DB: Database, C: Consensus, EF: ExecutorFactory> BlockchainTree<DB, C, EF> 
     }
 
     /// Gets the lowest ancestor for the given block in the block buffer.
+    ///
+    /// This does not return blocks that are already in the tree.
     pub fn lowest_buffered_ancestor(&self, hash: &BlockHash) -> Option<&SealedBlockWithSenders> {
-        self.buffered_blocks.lowest_ancestor(hash)
+        self.buffered_blocks.lowest_ancestor(hash).filter(|_| !self.is_block_in_tree(*hash))
+    }
+
+    /// Gets the buffered ancestors for the given block from the buffer. This should return the
+    /// blocks in increasing block number order.
+    ///
+    /// This does not return blocks that are already in the tree.
+    pub fn buffered_ancestors(&self, hash: &BlockHash) -> Vec<&SealedBlockWithSenders> {
+        self.buffered_blocks
+            .ancestors(hash)
+            .into_iter()
+            .filter(|_| !self.is_block_in_tree(*hash))
+            .collect()
     }
 
     /// Insert a new block in the tree.
@@ -1267,7 +1291,7 @@ mod tests {
         let externals = setup_externals(vec![exec2.clone(), exec1.clone(), exec2, exec1]);
 
         // last finalized block would be number 9.
-        setup_genesis(externals.db.clone(), genesis);
+        setup_genesis(externals.db.clone(), genesis.clone());
 
         // make tree
         let config = BlockchainTreeConfig::new(1, 2, 3, 2);
@@ -1591,6 +1615,18 @@ mod tests {
             InsertPayloadOk::Inserted(BlockStatus::Disconnected {
                 missing_ancestor: block2b.parent_num_hash()
             })
+        );
+
+        // try to insert genesis
+        assert_eq!(
+            tree.insert_block_without_senders(genesis).unwrap(),
+            InsertPayloadOk::AlreadySeen(BlockStatus::Valid)
+        );
+
+        // try to insert finalized block
+        assert_eq!(
+            tree.insert_block(block1).unwrap(),
+            InsertPayloadOk::AlreadySeen(BlockStatus::Valid)
         );
 
         TreeTester::default()

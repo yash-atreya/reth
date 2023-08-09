@@ -132,6 +132,9 @@ impl BlockBuffer {
     }
 
     /// Return a reference to the lowest ancestor of the given block in the buffer.
+    ///
+    /// The block itself will be returned if it exists in the buffer and has no parent in the
+    /// buffer.
     pub fn lowest_ancestor(&self, hash: &BlockHash) -> Option<&SealedBlockWithSenders> {
         let mut current_block = self.block_by_hash(hash)?;
         while let Some(block) = self
@@ -142,6 +145,34 @@ impl BlockBuffer {
             current_block = block;
         }
         Some(current_block)
+    }
+
+    /// Return a list of the ancestors of the given block in the buffer. Returns the blocks in
+    /// increasing block order.
+    ///
+    /// The block itself will be returned as an element if it is present in the buffer.
+    pub fn ancestors(&self, hash: &BlockHash) -> Vec<&SealedBlockWithSenders> {
+        let mut ancestors = Vec::new();
+        let mut current_block = match self.block_by_hash(hash) {
+            Some(block) => {
+                ancestors.push(block);
+                block
+            }
+            None => return ancestors,
+        };
+
+        while let Some(block) = self
+            .blocks
+            .get(&(current_block.number - 1))
+            .and_then(|blocks| blocks.get(&current_block.parent_hash))
+        {
+            ancestors.push(block);
+            current_block = block;
+        }
+        // we insert in reverse order, so reversing causes the list to be ordered with increasing
+        // block number
+        ancestors.reverse();
+        ancestors
     }
 
     /// Return number of blocks inside buffer.
