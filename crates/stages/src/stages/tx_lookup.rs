@@ -17,7 +17,7 @@ use reth_primitives::{
 use reth_provider::{
     BlockReader, DatabaseProviderRW, PruneCheckpointReader, PruneCheckpointWriter,
 };
-use tokio::sync::mpsc;
+use std::sync::mpsc;
 use tracing::*;
 
 /// The transaction lookup stage.
@@ -45,7 +45,6 @@ impl TransactionLookupStage {
     }
 }
 
-#[async_trait::async_trait]
 impl<DB: Database> Stage<DB> for TransactionLookupStage {
     /// Return the id of the stage
     fn id(&self) -> StageId {
@@ -53,7 +52,7 @@ impl<DB: Database> Stage<DB> for TransactionLookupStage {
     }
 
     /// Write transaction hash -> id entries
-    async fn execute(
+    fn execute(
         &mut self,
         provider: &DatabaseProviderRW<'_, &DB>,
         mut input: ExecInput,
@@ -103,7 +102,7 @@ impl<DB: Database> Stage<DB> for TransactionLookupStage {
         let mut transaction_count = 0;
 
         for chunk in &tx_walker.chunks(chunk_size) {
-            let (tx, rx) = mpsc::unbounded_channel();
+            let (tx, rx) = mpsc::channel();
             channels.push(rx);
 
             // Note: Unfortunate side-effect of how chunk is designed in itertools (it is not Send)
@@ -124,7 +123,7 @@ impl<DB: Database> Stage<DB> for TransactionLookupStage {
 
         // Iterate over channels and append the tx hashes to be sorted out later
         for mut channel in channels {
-            while let Some(tx) = channel.recv().await {
+            while let Ok(tx) = channel.recv() {
                 let (tx_hash, tx_id) = tx.map_err(|boxed| *boxed)?;
                 tx_list.push((tx_hash, tx_id));
             }
@@ -162,7 +161,7 @@ impl<DB: Database> Stage<DB> for TransactionLookupStage {
     }
 
     /// Unwind the stage.
-    async fn unwind(
+    fn unwind(
         &mut self,
         provider: &DatabaseProviderRW<'_, &DB>,
         input: UnwindInput,
