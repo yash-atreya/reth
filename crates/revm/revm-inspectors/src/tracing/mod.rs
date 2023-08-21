@@ -160,7 +160,7 @@ impl TracingInspector {
         value: U256,
         kind: CallKind,
         caller: Address,
-        mut gas_limit: u64,
+        gas_limit: u64,
         maybe_precompile: Option<bool>,
     ) {
         // This will only be true if the inspector is configured to exclude precompiles and the call
@@ -173,10 +173,6 @@ impl TracingInspector {
         };
 
         if self.trace_stack.is_empty() {
-            // this is the root call which should get the original gas limit of the transaction,
-            // because initialization costs are already subtracted from gas_limit
-            gas_limit = data.env.tx.gas_limit;
-
             // we set the spec id here because we only need to do this once and this condition is
             // hit exactly once
             self.spec_id = Some(data.env.cfg.spec_id);
