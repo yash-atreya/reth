@@ -6,7 +6,7 @@ use reth_consensus_common::validation::validate_block_standalone;
 use reth_db::{
     cursor::DbCursorRO,
     database::Database,
-    table::{Table, TableRow},
+    table::{Decode, Table, TableRow},
     transaction::{DbTx, DbTxMut},
     DatabaseError, RawTable, TableRawRow,
 };
@@ -110,7 +110,7 @@ impl<'a, DB: Database> DbTool<'a, DB> {
     /// [`ListFilter`] can be used to further
     /// filter down the desired results. (eg. List only rows which include `0xd3adbeef`)
     pub fn list<T: Table>(&self, filter: &ListFilter) -> Result<(Vec<TableRow<T>>, usize)> {
-        let bmb = Rc::new(BMByte::from(&filter.search));
+        let bmb = Rc::new(filter.search.as_ref().and_then(BMByte::from));
         if bmb.is_none() && filter.has_search() {
             eyre::bail!("Invalid search.")
         }
@@ -120,6 +120,10 @@ impl<'a, DB: Database> DbTool<'a, DB> {
         let data = self.db.view(|tx| {
             let mut cursor =
                 tx.cursor_read::<RawTable<T>>().expect("Was not able to obtain a cursor.");
+
+            if let Some(key) = &filter.seek_key {
+                cursor.seek(T::Key::decode(key)?.into())?;
+            }
 
             let map_filter = |row: Result<TableRawRow<T>, _>| {
                 if let Ok((k, v)) = row {
@@ -201,22 +205,37 @@ pub struct ListFilter {
     /// Take N entries.
     pub len: usize,
     /// Sequence of bytes that will be searched on values and keys from the database.
-    pub search: Vec<u8>,
+    pub search: Option<Vec<u8>>,
     /// Reverse order of entries.
     pub reverse: bool,
     /// Only counts the number of filtered entries without decoding and returning them.
     pub only_count: bool,
+    pub seek_key: Option<Vec<u8>>,
 }
 
 impl ListFilter {
     /// Creates a new [`ListFilter`].
-    pub fn new(skip: usize, len: usize, search: Vec<u8>, reverse: bool, only_count: bool) -> Self {
-        ListFilter { skip, len, search, reverse, only_count }
+    pub fn new(
+        skip: usize,
+        len: usize,
+        search: Option<Vec<u8>>,
+        reverse: bool,
+        only_count: bool,
+        seek_key: Option<Vec<u8>>,
+    ) -> Self {
+        ListFilter { skip, len, search, reverse, only_count, seek_key }
     }
 
-    /// If `search` has a list of bytes, then filter for rows that have this sequence.
+    /// If `search` is not [`Option::None`] and has a list of bytes,
+    /// then filter for rows that have this sequence.
     pub fn has_search(&self) -> bool {
-        !self.search.is_empty()
+        self.search.as_ref().map_or(false, |search| !search.is_empty())
+    }
+
+    /// If `seek` is not [`Option::None`] and has a list of bytes,
+    /// then seek the cursor to the row whose key is greater than or equal to this sequence.
+    pub fn has_seek(&self) -> bool {
+        self.seek_key.as_ref().map_or(false, |seek| !seek.is_empty())
     }
 
     /// Updates the page with new `skip` and `len` values.

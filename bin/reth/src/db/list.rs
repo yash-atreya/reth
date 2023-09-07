@@ -29,6 +29,13 @@ pub struct Command {
     /// missing results since the search uses the raw uncompressed value from the database.
     #[arg(long)]
     search: Option<String>,
+    /// Seek parameter for both keys and values. Prefix it with `0x` to seek for binary data,
+    /// and text otherwise.
+    ///
+    /// ATTENTION! For compressed tables (`Transactions` and `Receipts`), there might be
+    /// missing results since the search uses the raw uncompressed value from the database.
+    #[arg(long)]
+    seek_key: Option<String>,
     /// Returns the number of rows found.
     #[arg(long, short)]
     count: bool,
@@ -51,16 +58,18 @@ impl Command {
 
     /// Generate [`ListFilter`] from command.
     pub fn list_filter(&self) -> ListFilter {
-        let search = self
-            .search
-            .as_ref()
-            .map(|search| {
-                if let Some(search) = search.strip_prefix("0x") {
-                    return hex::decode(search).unwrap()
-                }
-                search.as_bytes().to_vec()
-            })
-            .unwrap_or_default();
+        let search = self.search.as_ref().map(|search| {
+            if let Some(search) = search.strip_prefix("0x") {
+                return hex::decode(search).unwrap()
+            }
+            search.as_bytes().to_vec()
+        });
+        let seek_key = self.seek_key.as_ref().map(|key| {
+            if let Some(seek) = key.strip_prefix("0x") {
+                return hex::decode(seek).unwrap()
+            }
+            key.as_bytes().to_vec()
+        });
 
         ListFilter {
             skip: self.skip,
@@ -68,6 +77,7 @@ impl Command {
             search,
             reverse: self.reverse,
             only_count: self.count,
+            seek_key,
         }
     }
 }
@@ -104,7 +114,7 @@ impl TableViewer<()> for ListTableViewer<'_> {
 
                 if self.args.count {
                     println!("{count} entries found.")
-                }else {
+                } else {
                     println!("{}", serde_json::to_string_pretty(&list)?);
                 }
                 Ok(())
