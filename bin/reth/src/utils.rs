@@ -8,7 +8,7 @@ use reth_db::{
     database::Database,
     table::{Decode, Table, TableRow},
     transaction::{DbTx, DbTxMut},
-    DatabaseError, RawTable, TableRawRow,
+    DatabaseError, RawKey, RawTable, TableRawRow,
 };
 use reth_interfaces::p2p::{
     bodies::client::BodiesClient,
@@ -109,7 +109,7 @@ impl<'a, DB: Database> DbTool<'a, DB> {
     ///
     /// [`ListFilter`] can be used to further
     /// filter down the desired results. (eg. List only rows which include `0xd3adbeef`)
-    pub fn list<T: Table>(&self, filter: &ListFilter) -> Result<(Vec<TableRow<T>>, usize)> {
+    pub fn list<T: Table>(&self, filter: &ListFilter<T>) -> Result<(Vec<TableRow<T>>, usize)> {
         let bmb = Rc::new(filter.search.as_ref().and_then(BMByte::from));
         if bmb.is_none() && filter.has_search() {
             eyre::bail!("Invalid search.")
@@ -120,10 +120,6 @@ impl<'a, DB: Database> DbTool<'a, DB> {
         let data = self.db.view(|tx| {
             let mut cursor =
                 tx.cursor_read::<RawTable<T>>().expect("Was not able to obtain a cursor.");
-
-            if let Some(key) = &filter.seek_key {
-                cursor.seek(T::Key::decode(key)?.into())?;
-            }
 
             let map_filter = |row: Result<TableRawRow<T>, _>| {
                 if let Ok((k, v)) = row {
@@ -151,16 +147,18 @@ impl<'a, DB: Database> DbTool<'a, DB> {
                 None
             };
 
+            let seek_key = filter.seek_key.clone().map(|key| RawKey::new(key));
+
             if filter.reverse {
                 Ok(cursor
-                    .walk_back(None)?
+                    .walk_back(seek_key)?
                     .skip(filter.skip)
                     .filter_map(map_filter)
                     .take(filter.len)
                     .collect::<Vec<(_, _)>>())
             } else {
                 Ok(cursor
-                    .walk(None)?
+                    .walk(seek_key)?
                     .skip(filter.skip)
                     .filter_map(map_filter)
                     .take(filter.len)
@@ -199,7 +197,7 @@ pub fn parse_path(value: &str) -> Result<PathBuf, shellexpand::LookupError<VarEr
 
 /// Filters the results coming from the database.
 #[derive(Debug)]
-pub struct ListFilter {
+pub struct ListFilter<T: Table> {
     /// Skip first N entries.
     pub skip: usize,
     /// Take N entries.
@@ -210,10 +208,10 @@ pub struct ListFilter {
     pub reverse: bool,
     /// Only counts the number of filtered entries without decoding and returning them.
     pub only_count: bool,
-    pub seek_key: Option<Vec<u8>>,
+    pub seek_key: Option<T::Key>,
 }
 
-impl ListFilter {
+impl<T: Table> ListFilter<T> {
     /// Creates a new [`ListFilter`].
     pub fn new(
         skip: usize,
@@ -221,7 +219,7 @@ impl ListFilter {
         search: Option<Vec<u8>>,
         reverse: bool,
         only_count: bool,
-        seek_key: Option<Vec<u8>>,
+        seek_key: Option<T::Key>,
     ) -> Self {
         ListFilter { skip, len, search, reverse, only_count, seek_key }
     }
@@ -232,10 +230,10 @@ impl ListFilter {
         self.search.as_ref().map_or(false, |search| !search.is_empty())
     }
 
-    /// If `seek` is not [`Option::None`] and has a list of bytes,
-    /// then seek the cursor to the row whose key is greater than or equal to this sequence.
+    /// If `seek` is not [`Option::None`], then seek the cursor to the row whose key is greater than
+    /// or equal to this sequence.
     pub fn has_seek(&self) -> bool {
-        self.seek_key.as_ref().map_or(false, |seek| !seek.is_empty())
+        self.seek_key.is_none()
     }
 
     /// Updates the page with new `skip` and `len` values.

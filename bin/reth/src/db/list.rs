@@ -57,19 +57,15 @@ impl Command {
     }
 
     /// Generate [`ListFilter`] from command.
-    pub fn list_filter(&self) -> ListFilter {
+    pub fn list_filter<T: Table>(&self) -> ListFilter<T> {
         let search = self.search.as_ref().map(|search| {
             if let Some(search) = search.strip_prefix("0x") {
                 return hex::decode(search).unwrap()
             }
             search.as_bytes().to_vec()
         });
-        let seek_key = self.seek_key.as_ref().map(|key| {
-            if let Some(seek) = key.strip_prefix("0x") {
-                return hex::decode(seek).unwrap()
-            }
-            key.as_bytes().to_vec()
-        });
+        let seek_key =
+            self.seek_key.as_ref().map(|key| serde_json::from_str::<T::Key>(&key).unwrap());
 
         ListFilter {
             skip: self.skip,
@@ -107,7 +103,7 @@ impl TableViewer<()> for ListTableViewer<'_> {
             }
 
 
-            let list_filter = self.args.list_filter();
+            let list_filter = self.args.list_filter::<T>();
 
             if self.args.json || self.args.count {
                 let (list, count) = self.tool.list::<T>(&list_filter)?;
