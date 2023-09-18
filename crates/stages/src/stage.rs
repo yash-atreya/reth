@@ -1,5 +1,4 @@
 use crate::error::StageError;
-use async_trait::async_trait;
 use reth_db::database::Database;
 use reth_primitives::{
     stage::{StageCheckpoint, StageId},
