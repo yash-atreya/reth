@@ -5519,6 +5519,7 @@ dependencies = [
  "reth-interfaces",
  "reth-libmdbx",
  "reth-metrics",
+ "reth-nippy-jar",
  "reth-primitives",
  "secp256k1",
  "serde",
