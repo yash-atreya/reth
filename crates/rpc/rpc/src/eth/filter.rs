@@ -1,4 +1,4 @@
-use super::cache::EthStateCache;
+use super::{cache::EthStateCache, error::EthResult};
 use crate::{
     eth::{error::EthApiError, logs_utils},
     result::{rpc_error_with_code, ToRpcResult},
@@ -7,7 +7,9 @@ use crate::{
 use async_trait::async_trait;
 use itertools::Itertools;
 use jsonrpsee::{core::RpcResult, server::IdProvider};
-use reth_primitives::{Address, BlockNumber, IntegerList, H256};
+use reth_primitives::{
+    Address, BlockHashOrNumber, BlockNumber, IntegerList, Receipt, SealedBlock, H256,
+};
 use reth_provider::{BlockIdReader, BlockReader, EvmEnvProvider, LogIndexProvider};
 use reth_rpc_api::EthFilterApiServer;
 use reth_rpc_types::{
@@ -318,17 +320,18 @@ where
         Ok(id)
     }
 
-    // TODO:
-    // /// Fetches both receipts and block for the given block number.
-    // async fn block_and_receipts_by_number(
-    //     &self,
-    //     hash_or_number: BlockHashOrNumber,
-    // ) -> EthResult<Option<(SealedBlock, Vec<Receipt>)>> { let block_hash = match
-    //   self.provider.convert_block_hash(hash_or_number)? { Some(hash) => hash, None => return
-    //   Ok(None), };
+    /// Fetches both receipts and block for the given block number.
+    async fn block_and_receipts_by_number(
+        &self,
+        hash_or_number: BlockHashOrNumber,
+    ) -> EthResult<Option<(SealedBlock, Vec<Receipt>)>> {
+        let block_hash = match self.provider.convert_block_hash(hash_or_number)? {
+            Some(hash) => hash,
+            None => return Ok(None),
+        };
 
-    //     Ok(self.eth_cache.get_block_and_receipts(block_hash).await?)
-    // }
+        Ok(self.eth_cache.get_block_and_receipts(block_hash).await?)
+    }
 
     /// Returns all logs in the given _inclusive_ range that match the filter
     ///
@@ -372,32 +375,27 @@ where
 
         // loop over the range of new blocks and check logs if the filter matches the log's bloom
         // filter
+        // TODO: simplify
         for block_numbers in log_index_filter.iter() {
-            let blocks =
-                self.provider.blocks(block_numbers.into_iter().map(Into::into).collect())?;
+            for block_number in block_numbers {
+                if let Some((block, receipts)) =
+                    self.block_and_receipts_by_number(block_number.into()).await?
+                {
+                    let block_hash = block.hash_slow();
 
-            for block in blocks {
-                let block = match block {
-                    Some(block) => block,
-                    None => continue,
-                };
+                    logs_utils::append_matching_block_logs(
+                        &mut all_logs,
+                        &filter_params,
+                        (block.number, block_hash).into(),
+                        block.body.into_iter().map(|tx| tx.hash()).zip(receipts),
+                        false,
+                    );
 
-                let block_hash = block.hash_slow();
-                let receipts =
-                    self.provider.receipts_by_block(block.number.into())?.unwrap_or_default();
-
-                logs_utils::append_matching_block_logs(
-                    &mut all_logs,
-                    &filter_params,
-                    (block.number, block_hash).into(),
-                    block.body.into_iter().map(|tx| tx.hash()).zip(receipts),
-                    false,
-                );
-
-                // size check but only if range is multiple blocks, so we always return all
-                // logs of a single block
-                if is_multi_block_range && all_logs.len() > self.max_logs_per_response {
-                    return Err(FilterError::QueryExceedsMaxResults(self.max_logs_per_response))
+                    // size check but only if range is multiple blocks, so we always return all
+                    // logs of a single block
+                    if is_multi_block_range && all_logs.len() > self.max_logs_per_response {
+                        return Err(FilterError::QueryExceedsMaxResults(self.max_logs_per_response))
+                    }
                 }
             }
         }
