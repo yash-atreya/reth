@@ -1,0 +1,5 @@
+import{f as o,j as e}from"./index-xNsX7Ar1.js";const s={description:"How to contribute to Reth",title:"Contribute"};function r(n){const t={a:"a",div:"div",h1:"h1",header:"header",p:"p",...o(),...n.components};return e.jsxs(e.Fragment,{children:[e.jsx(t.header,{children:e.jsxs(t.h1,{id:"contribute",children:["Contribute",e.jsx(t.a,{"aria-hidden":"true",tabIndex:"-1",href:"#contribute",children:e.jsx(t.div,{"data-autolink-icon":!0})})]})}),`
+`,`
+`,e.jsx(t.p,{children:"Reth has docs specifically geared for developers and contributors, including documentation on the structure and architecture of reth, the general workflow we employ, and other useful tips."}),`
+`,e.jsxs(t.p,{children:["You can find these docs ",e.jsx(t.a,{href:"https://github.com/paradigmxyz/reth/tree/main/docs",children:"here"}),"."]}),`
+`,e.jsxs(t.p,{children:["Check out our contributing guidelines ",e.jsx(t.a,{href:"https://github.com/paradigmxyz/reth/blob/main/CONTRIBUTING",children:"here"}),"."]})]})}function c(n={}){const{wrapper:t}={...o(),...n.components};return t?e.jsx(t,{...n,children:e.jsx(r,{...n})}):r(n)}export{c as default,s as frontmatter};

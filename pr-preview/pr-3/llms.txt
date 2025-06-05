@@ -1,0 +1,86 @@
+# Reth
+
+## Docs
+
+- [Reth](/overview): Documentation for Reth users and developers
+- [CLI Reference](/cli/cli): The Reth node is operated via the CLI by running the `reth node` command. To stop it, press `ctrl-c`. You may need to wait a bit as Reth tears down existing p2p connections or other cleanup tasks.
+- [op-reth](/cli/op-reth): Additional op-reth commands.
+- [reth](/cli/reth): Reth
+- [Contribute](/developers/contribute): Reth has docs specifically geared for developers and contributors, including documentation on the structure and architecture of reth, the general workflow we employ, and other useful tips.
+- [Developers](/developers/developers): Reth is composed of several crates that can be used in standalone projects. If you are interested in using one or more of the crates, you can get an overview of them in the [developer docs](https://github.com/paradigmxyz/reth/tree/main/docs), or take a look at the [crate docs](https://paradigmxyz.github.io/reth/docs).
+- [Profiling reth](/developers/profiling): [Memory profiling](#memory-profiling)
+- [JSON-RPC](/jsonrpc/intro): You can interact with Reth over JSON-RPC. Reth supports all standard Ethereum JSON-RPC API methods.
+- [Binaries](/installation/binaries): [**Archives of precompiled binaries of reth are available for Windows, macOS and Linux.**](https://github.com/paradigmxyz/reth/releases) They are static executables. Users of platforms not explicitly listed below should download one of these archives.
+- [Building for ARM devices](/installation/build-for-arm-devices): Reth can be built for and run on ARM devices, but there are a few things to take into consideration before.
+- [Docker](/installation/docker): There are two ways to obtain a Reth Docker image:
+- [Installation](/installation/overview): Reth runs on Linux and macOS (Windows tracked).
+- [Update Priorities](/installation/priorities): When publishing releases, reth will include an "Update Priority" section in the release notes, in the same manner Lighthouse does.
+- [Build from Source](/installation/source): You can build Reth on Linux, macOS, Windows, and Windows WSL2.
+- [Configuring Reth](/run/config): Reth places a configuration file named `reth.toml` in the data directory specified when starting the node. It is written in the [TOML] format.
+- [Running Reth on Ethereum Mainnet or testnets](/run/mainnet): Reth is an [*execution client*](https://ethereum.org/en/developers/docs/nodes-and-clients/#execution-clients). After Ethereum's transition to Proof of Stake (aka the Merge) it became required to run a [*consensus client*](https://ethereum.org/en/developers/docs/nodes-and-clients/#consensus-clients) along your execution client in order to sync into any "post-Merge" network. This is because the Ethereum execution layer now outsources consensus to a separate component, known as the consensus client.
+- [Observability with Prometheus & Grafana](/run/observability): Reth exposes a number of metrics which can be enabled by adding the `--metrics` flag:
+- [Running Reth on OP Stack chains](/run/optimism): `reth` ships with the `optimism` feature flag in several crates, including the binary, enabling support for OP Stack chains out of the box. Optimism has a small diff from the [L1 EELS][l1-el-spec],
+comprising of the following key changes:
+- [Ports](/run/ports): This section provides essential information about the ports used by the system, their primary purposes, and recommendations for exposure settings.
+- [Run Reth in a private testnet using Kurtosis](/run/private-testnet): For those who need a private testnet to validate functionality or scale with Reth.
+- [Pruning & Full Node](/run/pruning): Pruning and full node are new features of Reth,
+and we will be happy to hear about your experience using them either
+on [GitHub](https://github.com/paradigmxyz/reth/issues) or in the [Telegram group](https://t.me/paradigm_reth).
+- [Run a Node](/run/run-a-node): Congratulations, now that you have installed Reth, it's time to run it!
+- [Sync OP Mainnet](/run/sync-op-mainnet): To sync OP mainnet, Bedrock state needs to be imported as a starting point. There are currently two ways:
+- [Transaction types](/run/transactions): Over time, the Ethereum network has undergone various upgrades and improvements to enhance transaction efficiency, security, and user experience. Four significant transaction types that have evolved are:
+- [Troubleshooting](/run/troubleshooting): This page tries to answer how to deal with the most popular issues.
+- [reth config](/cli/reth/config): Write config to stdout
+- [reth db](/cli/reth/db): Database debugging utilities
+- [reth debug](/cli/reth/debug): Various debug routines
+- [reth download](/cli/reth/download): Download public node snapshots
+- [reth dump-genesis](/cli/reth/dump-genesis): Dumps genesis block JSON configuration to stdout
+- [reth import-era](/cli/reth/import-era): This syncs ERA encoded blocks from a directory
+- [reth import](/cli/reth/import): This syncs RLP encoded blocks from a file
+- [reth init-state](/cli/reth/init-state): Initialize the database from a state dump file
+- [reth init](/cli/reth/init): Initialize the database from a genesis file
+- [reth node](/cli/reth/node): Start the node
+- [reth p2p](/cli/reth/p2p): P2P Debugging utilities
+- [reth prune](/cli/reth/prune): Prune according to the configuration without any limits
+- [reth recover](/cli/reth/recover): Scripts for node recovery
+- [reth stage](/cli/reth/stage): Manipulate individual stages
+- [Hello World](/developers/exex/hello-world): Let's write a simple "Hello World" ExEx that emits a log every time a new chain of blocks is committed, reverted, or reorged.
+- [How do ExExes work?](/developers/exex/how-it-works): ExExes are just [Futures](https://doc.rust-lang.org/std/future/trait.Future.html) that run indefinitely alongside Reth
+– as simple as that.
+- [Execution Extensions (ExEx)](/developers/exex/overview): Execution Extensions (or ExExes, for short) allow developers to build their own infrastructure that relies on Reth
+as a base for driving the chain (be it [Ethereum](../../run/mainnet) or [OP Stack](../../run/optimism)) forward.
+- [Remote Execution Extensions](/developers/exex/remote): In this chapter, we will learn how to create an ExEx that emits all notifications to an external process.
+- [Tracking State](/developers/exex/tracking-state): In this chapter, we'll learn how to keep track of some state inside our ExEx.
+- [reth db checksum](/cli/reth/db/checksum): Calculates the content checksum of a table
+- [reth db clear](/cli/reth/db/clear): Deletes all table entries
+- [reth db diff](/cli/reth/db/diff): Create a diff between two database tables or two entire databases
+- [reth db drop](/cli/reth/db/drop): Deletes all database entries
+- [reth db get](/cli/reth/db/get): Gets the content of a table for the given key
+- [reth db list](/cli/reth/db/list): Lists the contents of a table
+- [reth db path](/cli/reth/db/path): Returns the full database path
+- [reth db stats](/cli/reth/db/stats): Lists all the tables, their entry count and their size
+- [reth db version](/cli/reth/db/version): Lists current and local database versions
+- [reth debug build-block](/cli/reth/debug/build-block): Debug block building
+- [reth debug execution](/cli/reth/debug/execution): Debug the roundtrip execution of blocks as well as the generated data
+- [reth debug in-memory-merkle](/cli/reth/debug/in-memory-merkle): Debug in-memory state root calculation
+- [reth debug merkle](/cli/reth/debug/merkle): Debug the clean & incremental state root calculations
+- [reth p2p body](/cli/reth/p2p/body): Download block body
+- [reth p2p header](/cli/reth/p2p/header): Download block header
+- [reth p2p rlpx](/cli/reth/p2p/rlpx): RLPx commands
+- [reth recover storage-tries](/cli/reth/recover/storage-tries): Recover the node by deleting dangling storage tries
+- [reth stage drop](/cli/reth/stage/drop): Drop a stage's tables from the database
+- [reth stage dump](/cli/reth/stage/dump): Dumps a stage from a range into a new database
+- [reth stage run](/cli/reth/stage/run): Run a single stage.
+- [reth stage unwind](/cli/reth/stage/unwind): Unwinds a certain block range, deleting it from the database
+- [reth test-vectors tables](/cli/reth/test-vectors/tables): Generates test vectors for specified tables. If no table is specified, generate for all
+- [reth db clear mdbx](/cli/reth/db/clear/mdbx): Deletes all database table entries
+- [reth db clear static-file](/cli/reth/db/clear/static-file): Deletes all static file segment entries
+- [reth db get mdbx](/cli/reth/db/get/mdbx): Gets the content of a database table for the given key
+- [reth db get static-file](/cli/reth/db/get/static-file): Gets the content of a static file segment for the given key
+- [reth p2p rlpx ping](/cli/reth/p2p/rlpx/ping): ping node
+- [reth stage dump account-hashing](/cli/reth/stage/dump/account-hashing): `AccountHashing` stage
+- [reth stage dump execution](/cli/reth/stage/dump/execution): Execution stage
+- [reth stage dump merkle](/cli/reth/stage/dump/merkle): Merkle stage
+- [reth stage dump storage-hashing](/cli/reth/stage/dump/storage-hashing): `StorageHashing` stage
+- [reth stage unwind num-blocks](/cli/reth/stage/unwind/num-blocks): Unwinds the database from the latest block, until the given number of blocks have been reached
+- [reth stage unwind to-block](/cli/reth/stage/unwind/to-block): Unwinds the database from the latest block, until the given block number or hash has been reached, that block is not included

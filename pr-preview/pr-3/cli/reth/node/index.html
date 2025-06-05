@@ -1,0 +1,880 @@
+<!doctype html>
+<html lang="en" data-vocs>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="/initializeTheme.iife.js"></script><title>reth node – Reth</title><meta property="og:type" content="website"/><meta property="og:title" content="reth node"/><meta name="twitter:card" content="summary_large_image"/>
+    <script type="module" crossorigin src="/assets/index-xNsX7Ar1.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/style-Cs3UkTB6.css">
+  </head>
+  <body>
+    <div id="app"><div class="vocs_DocsLayout" data-layout="docs"><a class="vocs_SkipLink vocs_utils_visuallyHidden" href="/cli/reth/node#vocs-content">Skip to content</a><div class="vocs_DocsLayout_gutterLeft"><aside class="vocs_Sidebar vocs_DocsLayout_sidebar"><div><div class="vocs_Sidebar_logoWrapper"><div class="vocs_Sidebar_logo"><a style="align-items:center;display:flex;height:100%" href="/" data-discover="true"><div class="vocs_NavLogo_title">Reth</div></a></div><div class="vocs_Sidebar_divider"></div></div><nav class="vocs_Sidebar_navigation"><div class="vocs_Sidebar_group"><section class="vocs_Sidebar_section vocs_Sidebar_level"><div class="vocs_Sidebar_sectionHeader"><div class="vocs_Sidebar_sectionTitle">Introduction</div></div><div class="vocs_Sidebar_items"><a data-active="false" class="vocs_Sidebar_item vocs_Link vocs_Link_styleless" href="/overview" variant="styleless" data-discover="true">Overview</a></div></section><section class="vocs_Sidebar_section vocs_Sidebar_level"><div class="vocs_Sidebar_sectionHeader"><div class="vocs_Sidebar_sectionTitle">Installation</div></div><div class="vocs_Sidebar_items"><a data-active="false" class="vocs_Sidebar_item vocs_Link vocs_Link_styleless" href="/installation/overview" variant="styleless" data-discover="true">Overview</a><a data-active="false" class="vocs_Sidebar_item vocs_Link vocs_Link_styleless" href="/installation/binaries" variant="styleless" data-discover="true">Pre-Built Binaries</a><a data-active="false" class="vocs_Sidebar_item vocs_Link vocs_Link_styleless" href="/installation/docker" variant="styleless" data-discover="true">Docker</a><a data-active="false" class="vocs_Sidebar_item vocs_Link vocs_Link_styleless" href="/installation/source" variant="styleless" data-discover="true">Build from Source</a><a data-active="false" class="vocs_Sidebar_item vocs_Link vocs_Link_styleless" href="/installation/build-for-arm-devices" variant="styleless" data-discover="true">Build for ARM devices</a><a data-active="false" class="vocs_Sidebar_item vocs_Link vocs_Link_styleless" href="/installation/priorities" variant="styleless" data-discover="true">Update Priorities</a></div></section><section class="vocs_Sidebar_section vocs_Sidebar_level"><div class="vocs_Sidebar_sectionHeader"><a data-active="false" class="vocs_Sidebar_sectionTitle vocs_Sidebar_sectionTitleLink vocs_Link vocs_Link_styleless" href="/run/run-a-node" variant="styleless" data-discover="true">Run a Node</a></div><div class="vocs_Sidebar_items"><a data-active="false" class="vocs_Sidebar_item vocs_Link vocs_Link_styleless" href="/run/mainnet" variant="styleless" data-discover="true">Mainnet or official testnets</a><a data-active="false" class="vocs_Sidebar_item vocs_Link vocs_Link_styleless" href="/run/optimism" variant="styleless" data-discover="true">OP Stack</a><a data-active="false" class="vocs_Sidebar_item vocs_Link vocs_Link_styleless" href="/run/sync-op-mainnet" variant="styleless" data-discover="true">Run an OP Mainnet Node</a><a data-active="false" class="vocs_Sidebar_item vocs_Link vocs_Link_styleless" href="/run/private-testnet" variant="styleless" data-discover="true">Private testnet</a><a data-active="false" class="vocs_Sidebar_item vocs_Link vocs_Link_styleless" href="/run/observability" variant="styleless" data-discover="true">Metrics</a><a data-active="false" class="vocs_Sidebar_item vocs_Link vocs_Link_styleless" href="/run/config" variant="styleless" data-discover="true">Configuring Reth</a><a data-active="false" class="vocs_Sidebar_item vocs_Link vocs_Link_styleless" href="/run/transactions" variant="styleless" data-discover="true">Transaction types</a><a data-active="false" class="vocs_Sidebar_item vocs_Link vocs_Link_styleless" href="/run/pruning" variant="styleless" data-discover="true">Pruning &amp; Full Node</a><a data-active="false" class="vocs_Sidebar_item vocs_Link vocs_Link_styleless" href="/run/ports" variant="styleless" data-discover="true">Ports</a><a data-active="false" class="vocs_Sidebar_item vocs_Link vocs_Link_styleless" href="/run/troubleshooting" variant="styleless" data-discover="true">Troubleshooting</a></div></section><section class="vocs_Sidebar_section vocs_Sidebar_level"><div class="vocs_Sidebar_sectionHeader"><a data-active="false" class="vocs_Sidebar_sectionTitle vocs_Sidebar_sectionTitleLink vocs_Link vocs_Link_styleless" href="/jsonrpc/intro" variant="styleless" data-discover="true">Interacting with Reth over JSON-RPC</a></div><div class="vocs_Sidebar_items"><a data-active="false" class="vocs_Sidebar_item vocs_Link vocs_Link_styleless" href="/jsonrpc/eth" variant="styleless" data-discover="true">eth</a><a data-active="false" class="vocs_Sidebar_item vocs_Link vocs_Link_styleless" href="/jsonrpc/web3" variant="styleless" data-discover="true">web3</a><a data-active="false" class="vocs_Sidebar_item vocs_Link vocs_Link_styleless" href="/jsonrpc/net" variant="styleless" data-discover="true">net</a><a data-active="false" class="vocs_Sidebar_item vocs_Link vocs_Link_styleless" href="/jsonrpc/txpool" variant="styleless" data-discover="true">txpool</a><a data-active="false" class="vocs_Sidebar_item vocs_Link vocs_Link_styleless" href="/jsonrpc/debug" variant="styleless" data-discover="true">debug</a><a data-active="false" class="vocs_Sidebar_item vocs_Link vocs_Link_styleless" href="/jsonrpc/trace" variant="styleless" data-discover="true">trace</a><a data-active="false" class="vocs_Sidebar_item vocs_Link vocs_Link_styleless" href="/jsonrpc/admin" variant="styleless" data-discover="true">admin</a><a data-active="false" class="vocs_Sidebar_item vocs_Link vocs_Link_styleless" href="/jsonrpc/rpc" variant="styleless" data-discover="true">rpc</a></div></section><section class="vocs_Sidebar_section vocs_Sidebar_level"><div class="vocs_Sidebar_sectionHeader"><a data-active="false" class="vocs_Sidebar_sectionTitle vocs_Sidebar_sectionTitleLink vocs_Link vocs_Link_styleless" href="/developers/developers" variant="styleless" data-discover="true">Developers</a></div><div class="vocs_Sidebar_items"><section class="vocs_Sidebar_section"><div class="vocs_Sidebar_sectionHeader"><div class="vocs_Sidebar_item">Execution Extensions</div></div><div class="vocs_Sidebar_items vocs_Sidebar_levelInset"><a data-active="false" class="vocs_Sidebar_item vocs_Link vocs_Link_styleless" href="/developers/exex/overview" variant="styleless" data-discover="true">Overview</a><a data-active="false" class="vocs_Sidebar_item vocs_Link vocs_Link_styleless" href="/developers/exex/how-it-works" variant="styleless" data-discover="true">How do ExExes work?</a><a data-active="false" class="vocs_Sidebar_item vocs_Link vocs_Link_styleless" href="/developers/exex/hello-world" variant="styleless" data-discover="true">Hello World</a><a data-active="false" class="vocs_Sidebar_item vocs_Link vocs_Link_styleless" href="/developers/exex/tracking-state" variant="styleless" data-discover="true">Tracking State</a><a data-active="false" class="vocs_Sidebar_item vocs_Link vocs_Link_styleless" href="/developers/exex/remote" variant="styleless" data-discover="true">Remote</a></div></section><a data-active="false" class="vocs_Sidebar_item vocs_Link vocs_Link_styleless" href="/developers/contribute" variant="styleless" data-discover="true">Contribute</a></div></section><section class="vocs_Sidebar_section vocs_Sidebar_level"><div class="vocs_Sidebar_sectionHeader"><a data-active="false" class="vocs_Sidebar_sectionTitle vocs_Sidebar_sectionTitleLink vocs_Sidebar_sectionHeaderActive vocs_Link vocs_Link_styleless" href="/cli/cli" variant="styleless" data-discover="true">CLI Reference</a><div role="button" tabindex="0"><div aria-label="toggle section" class="vocs_Icon vocs_Sidebar_sectionCollapse" role="img" style="--vocs_Icon_size:16px"><svg width="100%" height="100%" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><title>Chevron Right</title><path d="M6.1584 3.13508C6.35985 2.94621 6.67627 2.95642 6.86514 3.15788L10.6151 7.15788C10.7954 7.3502 10.7954 7.64949 10.6151 7.84182L6.86514 11.8418C6.67627 12.0433 6.35985 12.0535 6.1584 11.8646C5.95694 11.6757 5.94673 11.3593 6.1356 11.1579L9.565 7.49985L6.1356 3.84182C5.94673 3.64036 5.95694 3.32394 6.1584 3.13508Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path></svg></div></div></div><div class="vocs_Sidebar_items"><section class="vocs_Sidebar_section"><div class="vocs_Sidebar_sectionHeader"><a data-active="false" class="vocs_Sidebar_item vocs_Sidebar_sectionHeaderActive vocs_Link vocs_Link_styleless" href="/cli/reth" variant="styleless" data-discover="true">reth</a><div role="button" tabindex="0"><div aria-label="toggle section" class="vocs_Icon vocs_Sidebar_sectionCollapse" role="img" style="--vocs_Icon_size:16px"><svg width="100%" height="100%" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><title>Chevron Right</title><path d="M6.1584 3.13508C6.35985 2.94621 6.67627 2.95642 6.86514 3.15788L10.6151 7.15788C10.7954 7.3502 10.7954 7.64949 10.6151 7.84182L6.86514 11.8418C6.67627 12.0433 6.35985 12.0535 6.1584 11.8646C5.95694 11.6757 5.94673 11.3593 6.1356 11.1579L9.565 7.49985L6.1356 3.84182C5.94673 3.64036 5.95694 3.32394 6.1584 3.13508Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path></svg></div></div></div><div class="vocs_Sidebar_items vocs_Sidebar_levelInset"><a data-active="true" class="vocs_Sidebar_item vocs_Link vocs_Link_styleless" href="/cli/reth/node" variant="styleless" data-discover="true">reth node</a><a data-active="false" class="vocs_Sidebar_item vocs_Link vocs_Link_styleless" href="/cli/reth/init" variant="styleless" data-discover="true">reth init</a><a data-active="false" class="vocs_Sidebar_item vocs_Link vocs_Link_styleless" href="/cli/reth/init-state" variant="styleless" data-discover="true">reth init-state</a><a data-active="false" class="vocs_Sidebar_item vocs_Link vocs_Link_styleless" href="/cli/reth/import" variant="styleless" data-discover="true">reth import</a><a data-active="false" class="vocs_Sidebar_item vocs_Link vocs_Link_styleless" href="/cli/reth/import-era" variant="styleless" data-discover="true">reth import-era</a><a data-active="false" class="vocs_Sidebar_item vocs_Link vocs_Link_styleless" href="/cli/reth/dump-genesis" variant="styleless" data-discover="true">reth dump-genesis</a><section class="vocs_Sidebar_section"><div class="vocs_Sidebar_sectionHeader"><a data-active="false" class="vocs_Sidebar_item vocs_Link vocs_Link_styleless" href="/cli/reth/db" variant="styleless" data-discover="true">reth db</a><div role="button" tabindex="0"><div aria-label="toggle section" class="vocs_Icon vocs_Sidebar_sectionCollapse vocs_Sidebar_sectionCollapseActive" role="img" style="--vocs_Icon_size:16px"><svg width="100%" height="100%" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><title>Chevron Right</title><path d="M6.1584 3.13508C6.35985 2.94621 6.67627 2.95642 6.86514 3.15788L10.6151 7.15788C10.7954 7.3502 10.7954 7.64949 10.6151 7.84182L6.86514 11.8418C6.67627 12.0433 6.35985 12.0535 6.1584 11.8646C5.95694 11.6757 5.94673 11.3593 6.1356 11.1579L9.565 7.49985L6.1356 3.84182C5.94673 3.64036 5.95694 3.32394 6.1584 3.13508Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path></svg></div></div></div></section><a data-active="false" class="vocs_Sidebar_item vocs_Link vocs_Link_styleless" href="/cli/reth/download" variant="styleless" data-discover="true">reth download</a><section class="vocs_Sidebar_section"><div class="vocs_Sidebar_sectionHeader"><a data-active="false" class="vocs_Sidebar_item vocs_Link vocs_Link_styleless" href="/cli/reth/stage" variant="styleless" data-discover="true">reth stage</a><div role="button" tabindex="0"><div aria-label="toggle section" class="vocs_Icon vocs_Sidebar_sectionCollapse vocs_Sidebar_sectionCollapseActive" role="img" style="--vocs_Icon_size:16px"><svg width="100%" height="100%" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><title>Chevron Right</title><path d="M6.1584 3.13508C6.35985 2.94621 6.67627 2.95642 6.86514 3.15788L10.6151 7.15788C10.7954 7.3502 10.7954 7.64949 10.6151 7.84182L6.86514 11.8418C6.67627 12.0433 6.35985 12.0535 6.1584 11.8646C5.95694 11.6757 5.94673 11.3593 6.1356 11.1579L9.565 7.49985L6.1356 3.84182C5.94673 3.64036 5.95694 3.32394 6.1584 3.13508Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path></svg></div></div></div></section><section class="vocs_Sidebar_section"><div class="vocs_Sidebar_sectionHeader"><a data-active="false" class="vocs_Sidebar_item vocs_Link vocs_Link_styleless" href="/cli/reth/p2p" variant="styleless" data-discover="true">reth p2p</a><div role="button" tabindex="0"><div aria-label="toggle section" class="vocs_Icon vocs_Sidebar_sectionCollapse vocs_Sidebar_sectionCollapseActive" role="img" style="--vocs_Icon_size:16px"><svg width="100%" height="100%" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><title>Chevron Right</title><path d="M6.1584 3.13508C6.35985 2.94621 6.67627 2.95642 6.86514 3.15788L10.6151 7.15788C10.7954 7.3502 10.7954 7.64949 10.6151 7.84182L6.86514 11.8418C6.67627 12.0433 6.35985 12.0535 6.1584 11.8646C5.95694 11.6757 5.94673 11.3593 6.1356 11.1579L9.565 7.49985L6.1356 3.84182C5.94673 3.64036 5.95694 3.32394 6.1584 3.13508Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path></svg></div></div></div></section><a data-active="false" class="vocs_Sidebar_item vocs_Link vocs_Link_styleless" href="/cli/reth/config" variant="styleless" data-discover="true">reth config</a><section class="vocs_Sidebar_section"><div class="vocs_Sidebar_sectionHeader"><a data-active="false" class="vocs_Sidebar_item vocs_Link vocs_Link_styleless" href="/cli/reth/debug" variant="styleless" data-discover="true">reth debug</a><div role="button" tabindex="0"><div aria-label="toggle section" class="vocs_Icon vocs_Sidebar_sectionCollapse vocs_Sidebar_sectionCollapseActive" role="img" style="--vocs_Icon_size:16px"><svg width="100%" height="100%" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><title>Chevron Right</title><path d="M6.1584 3.13508C6.35985 2.94621 6.67627 2.95642 6.86514 3.15788L10.6151 7.15788C10.7954 7.3502 10.7954 7.64949 10.6151 7.84182L6.86514 11.8418C6.67627 12.0433 6.35985 12.0535 6.1584 11.8646C5.95694 11.6757 5.94673 11.3593 6.1356 11.1579L9.565 7.49985L6.1356 3.84182C5.94673 3.64036 5.95694 3.32394 6.1584 3.13508Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path></svg></div></div></div></section><section class="vocs_Sidebar_section"><div class="vocs_Sidebar_sectionHeader"><a data-active="false" class="vocs_Sidebar_item vocs_Link vocs_Link_styleless" href="/cli/reth/recover" variant="styleless" data-discover="true">reth recover</a><div role="button" tabindex="0"><div aria-label="toggle section" class="vocs_Icon vocs_Sidebar_sectionCollapse vocs_Sidebar_sectionCollapseActive" role="img" style="--vocs_Icon_size:16px"><svg width="100%" height="100%" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><title>Chevron Right</title><path d="M6.1584 3.13508C6.35985 2.94621 6.67627 2.95642 6.86514 3.15788L10.6151 7.15788C10.7954 7.3502 10.7954 7.64949 10.6151 7.84182L6.86514 11.8418C6.67627 12.0433 6.35985 12.0535 6.1584 11.8646C5.95694 11.6757 5.94673 11.3593 6.1356 11.1579L9.565 7.49985L6.1356 3.84182C5.94673 3.64036 5.95694 3.32394 6.1584 3.13508Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path></svg></div></div></div></section><a data-active="false" class="vocs_Sidebar_item vocs_Link vocs_Link_styleless" href="/cli/reth/prune" variant="styleless" data-discover="true">reth prune</a></div></section></div></section></div></nav></div><div class="vocs_Sidebar_footer"><div class="vocs_Sidebar_footerCurtain"></div><div class="vocs_Sidebar_footerContent"></div></div></aside></div><div class="vocs_DocsLayout_gutterTop vocs_DocsLayout_gutterTop_offsetLeftGutter"><div class="vocs_DesktopTopNav"><button class="vocs_DesktopSearch_search" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="radix-«Rlj»" data-state="closed"><svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-top:2px"><path d="M10 6.5C10 8.433 8.433 10 6.5 10C4.567 10 3 8.433 3 6.5C3 4.567 4.567 3 6.5 3C8.433 3 10 4.567 10 6.5ZM9.30884 10.0159C8.53901 10.6318 7.56251 11 6.5 11C4.01472 11 2 8.98528 2 6.5C2 4.01472 4.01472 2 6.5 2C8.98528 2 11 4.01472 11 6.5C11 7.56251 10.6318 8.53901 10.0159 9.30884L12.8536 12.1464C13.0488 12.3417 13.0488 12.6583 12.8536 12.8536C12.6583 13.0488 12.3417 13.0488 12.1464 12.8536L9.30884 10.0159Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path></svg>Search...<div class="vocs_DesktopSearch_searchCommand"><div style="background:currentColor;transform:rotate(45deg);width:1.5px;border-radius:2px;height:100%"></div></div></button><div class="vocs_DesktopTopNav_logoWrapper"><div class="vocs_DesktopTopNav_logo"><a style="align-items:center;display:flex;height:56px;margin-top:4px" href="/" data-discover="true"><div class="vocs_NavLogo_title">Reth</div></a></div></div><div class="vocs_DesktopTopNav_section"></div><div class="vocs_DesktopTopNav_section"></div></div><div class="vocs_MobileTopNav"><div class="vocs_MobileTopNav_section"><div class="vocs_MobileTopNav_group"><div class="vocs_MobileTopNav_logo"><a style="align-items:center;display:flex;height:100%" href="/" data-discover="true"><div class="vocs_NavLogo_title">Reth</div></a></div></div><div class="vocs_MobileTopNav_group"><nav aria-label="Main" data-orientation="horizontal" dir="ltr" class="vocs_MobileTopNav_navigation vocs_NavigationMenu"><div style="position:relative"><ul data-orientation="horizontal" class="vocs_NavigationMenu_list" dir="ltr"></ul></div></nav><div class="vocs_MobileTopNav_navigation vocs_MobileTopNav_navigation_compact"><button type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="radix-«Rkpj»" data-state="closed" class="vocs_MobileTopNav_menuTrigger vocs_MobileTopNav_navigationItem">Menu<div aria-label="Menu" class="vocs_Icon" role="img" style="--vocs_Icon_size:16px"><svg width="100%" height="100%" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><title>Chevron Down</title><path d="M3.13523 6.15803C3.3241 5.95657 3.64052 5.94637 3.84197 6.13523L7.5 9.56464L11.158 6.13523C11.3595 5.94637 11.6759 5.95657 11.8648 6.15803C12.0536 6.35949 12.0434 6.67591 11.842 6.86477L7.84197 10.6148C7.64964 10.7951 7.35036 10.7951 7.15803 10.6148L3.15803 6.86477C2.95657 6.67591 2.94637 6.35949 3.13523 6.15803Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path></svg></div></button></div></div></div><div class="vocs_MobileTopNav_section"><div class="vocs_MobileTopNav_group" style="margin-right:-8px"><button class="vocs_MobileSearch_searchButton" type="button" aria-label="Search" aria-haspopup="dialog" aria-expanded="false" aria-controls="radix-«R19j»" data-state="closed"><svg width="21" height="21" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 6.5C10 8.433 8.433 10 6.5 10C4.567 10 3 8.433 3 6.5C3 4.567 4.567 3 6.5 3C8.433 3 10 4.567 10 6.5ZM9.30884 10.0159C8.53901 10.6318 7.56251 11 6.5 11C4.01472 11 2 8.98528 2 6.5C2 4.01472 4.01472 2 6.5 2C8.98528 2 11 4.01472 11 6.5C11 7.56251 10.6318 8.53901 10.0159 9.30884L12.8536 12.1464C13.0488 12.3417 13.0488 12.6583 12.8536 12.8536C12.6583 13.0488 12.3417 13.0488 12.1464 12.8536L9.30884 10.0159Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path></svg></button></div></div></div></div><div class="vocs_DocsLayout_gutterTopCurtain vocs_DocsLayout_gutterTopCurtain_withSidebar"><div class="vocs_DesktopTopNav_curtain"></div><div class="vocs_MobileTopNav_curtain"><div class="vocs_MobileTopNav_curtainGroup"><div class="vocs_MobileTopNav_curtainItem"><button type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="radix-«Rqj»" data-state="closed" class="vocs_MobileTopNav_menuTrigger"><div aria-label="Menu" class="vocs_Icon" role="img" style="--vocs_Icon_size:13px"><svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 79 48" fill="none"><title>Menu</title><path fill="currentColor" d="M19.528 47.232h40.87c1.952 0 3.515-1.562 3.515-3.564a3.5 3.5 0 0 0-3.516-3.516H19.528a3.501 3.501 0 0 0-3.515 3.516c0 2.002 1.562 3.564 3.515 3.564ZM12.057 27.262h55.81a3.501 3.501 0 0 0 3.516-3.516 3.501 3.501 0 0 0-3.515-3.515h-55.81a3.501 3.501 0 0 0-3.516 3.515 3.501 3.501 0 0 0 3.515 3.516ZM4.391 7.34H75.29c2.002 0 3.515-1.563 3.515-3.516 0-2.002-1.513-3.564-3.515-3.564H4.39C2.438.26.876 1.822.876 3.824A3.501 3.501 0 0 0 4.39 7.34Z"></path></svg></div><div class="vocs_MobileTopNav_menuTitle">reth node</div></button></div></div><div class="vocs_MobileTopNav_curtainGroup"><div class="vocs_MobileTopNav_curtainItem"><button type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="radix-«R5aj»" data-state="closed" class="vocs_MobileTopNav_outlineTrigger">On this page<div aria-label="On this page" class="vocs_Icon" role="img" style="--vocs_Icon_size:16px"><svg width="100%" height="100%" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><title>Chevron Right</title><path d="M6.1584 3.13508C6.35985 2.94621 6.67627 2.95642 6.86514 3.15788L10.6151 7.15788C10.7954 7.3502 10.7954 7.64949 10.6151 7.84182L6.86514 11.8418C6.67627 12.0433 6.35985 12.0535 6.1584 11.8646C5.95694 11.6757 5.94673 11.3593 6.1356 11.1579L9.565 7.49985L6.1356 3.84182C5.94673 3.64036 5.95694 3.32394 6.1584 3.13508Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path></svg></div></button></div></div></div></div><div class="vocs_DocsLayout_gutterRight vocs_DocsLayout_gutterRight_withSidebar"></div><div id="vocs-content" class="vocs_DocsLayout_content vocs_DocsLayout_content_withSidebar vocs_DocsLayout_content_withTopNav"><article class="vocs_Content"><header class="vocs_Header"><h1 class="vocs_H1 vocs_Heading"><div id="reth-node" class="vocs_Heading_slugTarget"></div>reth node<a class="vocs_Anchor vocs_Autolink" aria-hidden="true" tabindex="-1" href="/cli/reth/node#reth-node" data-discover="true"><div data-autolink-icon="true" class="vocs_Div vocs_AutolinkIcon" style="--vocs_AutolinkIcon_iconUrl:url(/.vocs/icons/link.svg)"></div></a></h1></header>
+<p class="vocs_Paragraph">Start the node</p>
+<div class="vocs_CodeBlock"><div class="vocs_Pre_wrapper"><pre style="background-color:#fff;--shiki-dark-bg:#22272e;color:#24292e;--shiki-dark:#adbac7" tabindex="0" class="shiki shiki-themes github-light github-dark-dimmed vocs_Pre"><button class="vocs_CopyButton" data-copied="false" type="button"><div aria-label="Copy" class="vocs_Icon" role="img" style="--vocs_Icon_size:18px"><svg width="100%" height="100%" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><title>Copy</title><path d="M5 2V1H10V2H5ZM4.75 0C4.33579 0 4 0.335786 4 0.75V1H3.5C2.67157 1 2 1.67157 2 2.5V12.5C2 13.3284 2.67157 14 3.5 14H7V13H3.5C3.22386 13 3 12.7761 3 12.5V2.5C3 2.22386 3.22386 2 3.5 2H4V2.25C4 2.66421 4.33579 3 4.75 3H10.25C10.6642 3 11 2.66421 11 2.25V2H11.5C11.7761 2 12 2.22386 12 2.5V7H13V2.5C13 1.67157 12.3284 1 11.5 1H11V0.75C11 0.335786 10.6642 0 10.25 0H4.75ZM9 8.5C9 8.77614 8.77614 9 8.5 9C8.22386 9 8 8.77614 8 8.5C8 8.22386 8.22386 8 8.5 8C8.77614 8 9 8.22386 9 8.5ZM10.5 9C10.7761 9 11 8.77614 11 8.5C11 8.22386 10.7761 8 10.5 8C10.2239 8 10 8.22386 10 8.5C10 8.77614 10.2239 9 10.5 9ZM13 8.5C13 8.77614 12.7761 9 12.5 9C12.2239 9 12 8.77614 12 8.5C12 8.22386 12.2239 8 12.5 8C12.7761 8 13 8.22386 13 8.5ZM14.5 9C14.7761 9 15 8.77614 15 8.5C15 8.22386 14.7761 8 14.5 8C14.2239 8 14 8.22386 14 8.5C14 8.77614 14.2239 9 14.5 9ZM15 10.5C15 10.7761 14.7761 11 14.5 11C14.2239 11 14 10.7761 14 10.5C14 10.2239 14.2239 10 14.5 10C14.7761 10 15 10.2239 15 10.5ZM14.5 13C14.7761 13 15 12.7761 15 12.5C15 12.2239 14.7761 12 14.5 12C14.2239 12 14 12.2239 14 12.5C14 12.7761 14.2239 13 14.5 13ZM14.5 15C14.7761 15 15 14.7761 15 14.5C15 14.2239 14.7761 14 14.5 14C14.2239 14 14 14.2239 14 14.5C14 14.7761 14.2239 15 14.5 15ZM8.5 11C8.77614 11 9 10.7761 9 10.5C9 10.2239 8.77614 10 8.5 10C8.22386 10 8 10.2239 8 10.5C8 10.7761 8.22386 11 8.5 11ZM9 12.5C9 12.7761 8.77614 13 8.5 13C8.22386 13 8 12.7761 8 12.5C8 12.2239 8.22386 12 8.5 12C8.77614 12 9 12.2239 9 12.5ZM8.5 15C8.77614 15 9 14.7761 9 14.5C9 14.2239 8.77614 14 8.5 14C8.22386 14 8 14.2239 8 14.5C8 14.7761 8.22386 15 8.5 15ZM11 14.5C11 14.7761 10.7761 15 10.5 15C10.2239 15 10 14.7761 10 14.5C10 14.2239 10.2239 14 10.5 14C10.7761 14 11 14.2239 11 14.5ZM12.5 15C12.7761 15 13 14.7761 13 14.5C13 14.2239 12.7761 14 12.5 14C12.2239 14 12 14.2239 12 14.5C12 14.7761 12.2239 15 12.5 15Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path></svg></div></button><code class="vocs_Code"><span class="line vocs_Span"><span style="color:#6F42C1;--shiki-dark:#F69D50" class="vocs_Span">$</span><span style="color:#032F62;--shiki-dark:#96D0FF" class="vocs_Span"> reth</span><span style="color:#032F62;--shiki-dark:#96D0FF" class="vocs_Span"> node</span><span style="color:#005CC5;--shiki-dark:#6CB6FF" class="vocs_Span"> --help</span></span></code></pre></div></div>
+<div class="vocs_CodeBlock"><div class="vocs_Pre_wrapper"><pre style="background-color:#fff;--shiki-dark-bg:#22272e;color:#24292e;--shiki-dark:#adbac7" tabindex="0" class="shiki shiki-themes github-light github-dark-dimmed vocs_Pre"><button class="vocs_CopyButton" data-copied="false" type="button"><div aria-label="Copy" class="vocs_Icon" role="img" style="--vocs_Icon_size:18px"><svg width="100%" height="100%" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><title>Copy</title><path d="M5 2V1H10V2H5ZM4.75 0C4.33579 0 4 0.335786 4 0.75V1H3.5C2.67157 1 2 1.67157 2 2.5V12.5C2 13.3284 2.67157 14 3.5 14H7V13H3.5C3.22386 13 3 12.7761 3 12.5V2.5C3 2.22386 3.22386 2 3.5 2H4V2.25C4 2.66421 4.33579 3 4.75 3H10.25C10.6642 3 11 2.66421 11 2.25V2H11.5C11.7761 2 12 2.22386 12 2.5V7H13V2.5C13 1.67157 12.3284 1 11.5 1H11V0.75C11 0.335786 10.6642 0 10.25 0H4.75ZM9 8.5C9 8.77614 8.77614 9 8.5 9C8.22386 9 8 8.77614 8 8.5C8 8.22386 8.22386 8 8.5 8C8.77614 8 9 8.22386 9 8.5ZM10.5 9C10.7761 9 11 8.77614 11 8.5C11 8.22386 10.7761 8 10.5 8C10.2239 8 10 8.22386 10 8.5C10 8.77614 10.2239 9 10.5 9ZM13 8.5C13 8.77614 12.7761 9 12.5 9C12.2239 9 12 8.77614 12 8.5C12 8.22386 12.2239 8 12.5 8C12.7761 8 13 8.22386 13 8.5ZM14.5 9C14.7761 9 15 8.77614 15 8.5C15 8.22386 14.7761 8 14.5 8C14.2239 8 14 8.22386 14 8.5C14 8.77614 14.2239 9 14.5 9ZM15 10.5C15 10.7761 14.7761 11 14.5 11C14.2239 11 14 10.7761 14 10.5C14 10.2239 14.2239 10 14.5 10C14.7761 10 15 10.2239 15 10.5ZM14.5 13C14.7761 13 15 12.7761 15 12.5C15 12.2239 14.7761 12 14.5 12C14.2239 12 14 12.2239 14 12.5C14 12.7761 14.2239 13 14.5 13ZM14.5 15C14.7761 15 15 14.7761 15 14.5C15 14.2239 14.7761 14 14.5 14C14.2239 14 14 14.2239 14 14.5C14 14.7761 14.2239 15 14.5 15ZM8.5 11C8.77614 11 9 10.7761 9 10.5C9 10.2239 8.77614 10 8.5 10C8.22386 10 8 10.2239 8 10.5C8 10.7761 8.22386 11 8.5 11ZM9 12.5C9 12.7761 8.77614 13 8.5 13C8.22386 13 8 12.7761 8 12.5C8 12.2239 8.22386 12 8.5 12C8.77614 12 9 12.2239 9 12.5ZM8.5 15C8.77614 15 9 14.7761 9 14.5C9 14.2239 8.77614 14 8.5 14C8.22386 14 8 14.2239 8 14.5C8 14.7761 8.22386 15 8.5 15ZM11 14.5C11 14.7761 10.7761 15 10.5 15C10.2239 15 10 14.7761 10 14.5C10 14.2239 10.2239 14 10.5 14C10.7761 14 11 14.2239 11 14.5ZM12.5 15C12.7761 15 13 14.7761 13 14.5C13 14.2239 12.7761 14 12.5 14C12.2239 14 12 14.2239 12 14.5C12 14.7761 12.2239 15 12.5 15Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path></svg></div></button><code class="vocs_Code"><span class="line vocs_Span"><span class="vocs_Span">Usage: reth node [OPTIONS]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">Options:</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --config &lt;FILE&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          The path to the configuration file to use.</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --chain &lt;CHAIN_OR_PATH&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          The chain this node is running.</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Possible values are either a built-in chain or the path to a chain specification file.</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Built-in chains:</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">              mainnet, sepolia, holesky, hoodi, dev</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: mainnet]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --instance &lt;INSTANCE&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Add a new instance of a node.</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Configures the ports of the node to avoid conflicts with the defaults. This is useful for running multiple nodes on the same machine.</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Max number of instances is 200. It is chosen in a way so that it&#x27;s not possible to have port numbers that conflict with each other.</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Changes to the following port numbers: - `DISCOVERY_PORT`: default + `instance` - 1 - `AUTH_PORT`: default + `instance` * 100 - 100 - `HTTP_RPC_PORT`: default - `instance` + 1 - `WS_RPC_PORT`: default + `instance` * 2 - 2 - `IPC_PATH`: default + `-instance`</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --with-unused-ports</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Sets all ports to unused, allowing the OS to choose random unused ports when sockets are bound.</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Mutually exclusive with `--instance`.</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">  -h, --help</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Print help (see a summary with &#x27;-h&#x27;)</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">Metrics:</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --metrics &lt;SOCKET&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Enable Prometheus metrics.</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          The metrics will be served at the given interface and port.</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">Datadir:</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --datadir &lt;DATA_DIR&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          The path to the data dir for all reth files and subdirectories.</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Defaults to the OS-specific data directory:</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          - Linux: `$XDG_DATA_HOME/reth/` or `$HOME/.local/share/reth/`</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          - Windows: `{FOLDERID_RoamingAppData}/reth/`</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          - macOS: `$HOME/Library/Application Support/reth/`</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: default]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --datadir.static-files &lt;PATH&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          The absolute path to store static files in.</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">Networking:</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">  -d, --disable-discovery</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Disable the discovery service</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --disable-dns-discovery</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Disable the DNS discovery</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --disable-discv4-discovery</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Disable Discv4 discovery</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --enable-discv5-discovery</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Enable Discv5 discovery</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --disable-nat</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Disable Nat discovery</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --discovery.addr &lt;DISCOVERY_ADDR&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          The UDP address to use for devp2p peer discovery version 4</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 0.0.0.0]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --discovery.port &lt;DISCOVERY_PORT&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          The UDP port to use for devp2p peer discovery version 4</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 30303]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --discovery.v5.addr &lt;DISCOVERY_V5_ADDR&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          The UDP IPv4 address to use for devp2p peer discovery version 5. Overwritten by `RLPx` address, if it&#x27;s also IPv4</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --discovery.v5.addr.ipv6 &lt;DISCOVERY_V5_ADDR_IPV6&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          The UDP IPv6 address to use for devp2p peer discovery version 5. Overwritten by `RLPx` address, if it&#x27;s also IPv6</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --discovery.v5.port &lt;DISCOVERY_V5_PORT&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          The UDP IPv4 port to use for devp2p peer discovery version 5. Not used unless `--addr` is IPv4, or `--discovery.v5.addr` is set</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 9200]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --discovery.v5.port.ipv6 &lt;DISCOVERY_V5_PORT_IPV6&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          The UDP IPv6 port to use for devp2p peer discovery version 5. Not used unless `--addr` is IPv6, or `--discovery.addr.ipv6` is set</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 9200]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --discovery.v5.lookup-interval &lt;DISCOVERY_V5_LOOKUP_INTERVAL&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          The interval in seconds at which to carry out periodic lookup queries, for the whole run of the program</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 20]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --discovery.v5.bootstrap.lookup-interval &lt;DISCOVERY_V5_BOOTSTRAP_LOOKUP_INTERVAL&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          The interval in seconds at which to carry out boost lookup queries, for a fixed number of times, at bootstrap</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 5]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --discovery.v5.bootstrap.lookup-countdown &lt;DISCOVERY_V5_BOOTSTRAP_LOOKUP_COUNTDOWN&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          The number of times to carry out boost lookup queries at bootstrap</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 200]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --trusted-peers &lt;TRUSTED_PEERS&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Comma separated enode URLs of trusted peers for P2P connections.</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          --trusted-peers enode://abcd@192.168.0.1:30303</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --trusted-only</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Connect to or accept from trusted peers only</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --bootnodes &lt;BOOTNODES&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Comma separated enode URLs for P2P discovery bootstrap.</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Will fall back to a network-specific default if not specified.</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --dns-retries &lt;DNS_RETRIES&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Amount of DNS resolution requests retries to perform when peering</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 0]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --peers-file &lt;FILE&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          The path to the known peers file. Connected peers are dumped to this file on nodes</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          shutdown, and read on startup. Cannot be used with `--no-persist-peers`.</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --identity &lt;IDENTITY&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Custom node identity</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: reth/&lt;VERSION&gt;-&lt;SHA&gt;/&lt;ARCH&gt;]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --p2p-secret-key &lt;PATH&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Secret key to use for this node.</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          This will also deterministically set the peer ID. If not specified, it will be set in the data dir for the chain being used.</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --no-persist-peers</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Do not persist peers.</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --nat &lt;NAT&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          NAT resolution method (any|none|upnp|publicip|extip:\&lt;IP\&gt;)</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: any]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --addr &lt;ADDR&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Network listening address</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 0.0.0.0]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --port &lt;PORT&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Network listening port</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 30303]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --max-outbound-peers &lt;MAX_OUTBOUND_PEERS&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Maximum number of outbound requests. default: 100</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --max-inbound-peers &lt;MAX_INBOUND_PEERS&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Maximum number of inbound requests. default: 30</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --max-tx-reqs &lt;COUNT&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Max concurrent `GetPooledTransactions` requests.</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 130]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --max-tx-reqs-peer &lt;COUNT&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Max concurrent `GetPooledTransactions` requests per peer.</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 1]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --max-seen-tx-history &lt;COUNT&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Max number of seen transactions to remember per peer.</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Default is 320 transaction hashes.</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 320]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --max-pending-imports &lt;COUNT&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Max number of transactions to import concurrently.</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 4096]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --pooled-tx-response-soft-limit &lt;BYTES&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Experimental, for usage in research. Sets the max accumulated byte size of transactions</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          to pack in one response.</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Spec&#x27;d at 2MiB.</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 2097152]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --pooled-tx-pack-soft-limit &lt;BYTES&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Experimental, for usage in research. Sets the max accumulated byte size of transactions to</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          request in one request.</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Since `RLPx` protocol version 68, the byte size of a transaction is shared as metadata in a</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          transaction announcement (see `RLPx` specs). This allows a node to request a specific size</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          response.</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          By default, nodes request only 128 KiB worth of transactions, but should a peer request</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          more, up to 2 MiB, a node will answer with more than 128 KiB.</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Default is 128 KiB.</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 131072]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --max-tx-pending-fetch &lt;COUNT&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Max capacity of cache of hashes for transactions pending fetch.</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 25600]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --net-if.experimental &lt;IF_NAME&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Name of network interface used to communicate with peers.</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          If flag is set, but no value is passed, the default interface for docker `eth0` is tried.</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --tx-propagation-policy &lt;TX_PROPAGATION_POLICY&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Transaction Propagation Policy</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          The policy determines which peers transactions are gossiped to.</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: All]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">RPC:</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --http</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Enable the HTTP-RPC server</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --http.addr &lt;HTTP_ADDR&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Http server address to listen on</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 127.0.0.1]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --http.port &lt;HTTP_PORT&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Http server port to listen on</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 8545]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --http.disable-compression</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Disable compression for HTTP responses</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --http.api &lt;HTTP_API&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Rpc Modules to be configured for the HTTP server</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [possible values: admin, debug, eth, net, trace, txpool, web3, rpc, reth, ots, flashbots, miner, mev]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --http.corsdomain &lt;HTTP_CORSDOMAIN&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Http Corsdomain to allow request from</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --ws</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Enable the WS-RPC server</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --ws.addr &lt;WS_ADDR&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Ws server address to listen on</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 127.0.0.1]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --ws.port &lt;WS_PORT&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Ws server port to listen on</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 8546]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --ws.origins &lt;ws.origins&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Origins from which to accept `WebSocket` requests</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --ws.api &lt;WS_API&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Rpc Modules to be configured for the WS server</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [possible values: admin, debug, eth, net, trace, txpool, web3, rpc, reth, ots, flashbots, miner, mev]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --ipcdisable</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Disable the IPC-RPC server</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --ipcpath &lt;IPCPATH&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Filename for IPC socket/pipe within the datadir</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: &lt;CACHE_DIR&gt;.ipc]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --authrpc.addr &lt;AUTH_ADDR&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Auth server address to listen on</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 127.0.0.1]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --authrpc.port &lt;AUTH_PORT&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Auth server port to listen on</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 8551]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --authrpc.jwtsecret &lt;PATH&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Path to a JWT secret to use for the authenticated engine-API RPC server.</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          This will enforce JWT authentication for all requests coming from the consensus layer.</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          If no path is provided, a secret will be generated and stored in the datadir under `&lt;DIR&gt;/&lt;CHAIN_ID&gt;/jwt.hex`. For mainnet this would be `~/.reth/mainnet/jwt.hex` by default.</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --auth-ipc</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Enable auth engine API over IPC</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --auth-ipc.path &lt;AUTH_IPC_PATH&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Filename for auth IPC socket/pipe within the datadir</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: &lt;CACHE_DIR&gt;_engine_api.ipc]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --rpc.jwtsecret &lt;HEX&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Hex encoded JWT secret to authenticate the regular RPC server(s), see `--http.api` and `--ws.api`.</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          This is __not__ used for the authenticated engine-API RPC server, see `--authrpc.jwtsecret`.</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --rpc.max-request-size &lt;RPC_MAX_REQUEST_SIZE&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Set the maximum RPC request payload size for both HTTP and WS in megabytes</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 15]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --rpc.max-response-size &lt;RPC_MAX_RESPONSE_SIZE&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Set the maximum RPC response payload size for both HTTP and WS in megabytes</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 160]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [aliases: --rpc.returndata.limit]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --rpc.max-subscriptions-per-connection &lt;RPC_MAX_SUBSCRIPTIONS_PER_CONNECTION&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Set the maximum concurrent subscriptions per connection</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 1024]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --rpc.max-connections &lt;COUNT&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Maximum number of RPC server connections</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 500]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --rpc.max-tracing-requests &lt;COUNT&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Maximum number of concurrent tracing requests.</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          By default this chooses a sensible value based on the number of available cores. Tracing requests are generally CPU bound. Choosing a value that is higher than the available CPU cores can have a negative impact on the performance of the node and affect the node&#x27;s ability to maintain sync.</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: &lt;NUM CPU CORES-2&gt;]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --rpc.max-trace-filter-blocks &lt;COUNT&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Maximum number of blocks for `trace_filter` requests</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 100]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --rpc.max-blocks-per-filter &lt;COUNT&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Maximum number of blocks that could be scanned per filter request. (0 = entire chain)</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 100000]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --rpc.max-logs-per-response &lt;COUNT&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Maximum number of logs that can be returned in a single response. (0 = no limit)</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 20000]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --rpc.gascap &lt;GAS_CAP&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Maximum gas limit for `eth_call` and call tracing RPC methods</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 50000000]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --rpc.txfeecap &lt;TX_FEE_CAP&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Maximum eth transaction fee (in ether) that can be sent via the RPC APIs (0 = no cap)</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 1.0]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --rpc.max-simulate-blocks &lt;BLOCKS_COUNT&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Maximum number of blocks for `eth_simulateV1` call</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 256]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --rpc.eth-proof-window &lt;RPC_ETH_PROOF_WINDOW&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          The maximum proof window for historical proof generation. This value allows for generating historical proofs up to configured number of blocks from current tip (up to `tip - window`)</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 0]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --rpc.proof-permits &lt;COUNT&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Maximum number of concurrent getproof requests</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 25]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --builder.disallow &lt;PATH&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Path to file containing disallowed addresses, json-encoded list of strings. Block validation API will reject blocks containing transactions from these addresses</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">RPC State Cache:</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --rpc-cache.max-blocks &lt;MAX_BLOCKS&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Max number of blocks in cache</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 5000]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --rpc-cache.max-receipts &lt;MAX_RECEIPTS&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Max number receipts in cache</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 2000]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --rpc-cache.max-headers &lt;MAX_HEADERS&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Max number of headers in cache</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 1000]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --rpc-cache.max-concurrent-db-requests &lt;MAX_CONCURRENT_DB_REQUESTS&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Max number of concurrent database requests</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 512]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">Gas Price Oracle:</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --gpo.blocks &lt;BLOCKS&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Number of recent blocks to check for gas price</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 20]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --gpo.ignoreprice &lt;IGNORE_PRICE&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Gas Price below which gpo will ignore transactions</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 2]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --gpo.maxprice &lt;MAX_PRICE&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Maximum transaction priority fee(or gasprice before London Fork) to be recommended by gpo</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 500000000000]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --gpo.percentile &lt;PERCENTILE&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          The percentile of gas prices to use for the estimate</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 60]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">TxPool:</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --txpool.pending-max-count &lt;PENDING_MAX_COUNT&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Max number of transaction in the pending sub-pool</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 10000]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --txpool.pending-max-size &lt;PENDING_MAX_SIZE&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Max size of the pending sub-pool in megabytes</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 20]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --txpool.basefee-max-count &lt;BASEFEE_MAX_COUNT&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Max number of transaction in the basefee sub-pool</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 10000]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --txpool.basefee-max-size &lt;BASEFEE_MAX_SIZE&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Max size of the basefee sub-pool in megabytes</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 20]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --txpool.queued-max-count &lt;QUEUED_MAX_COUNT&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Max number of transaction in the queued sub-pool</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 10000]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --txpool.queued-max-size &lt;QUEUED_MAX_SIZE&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Max size of the queued sub-pool in megabytes</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 20]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --txpool.blobpool-max-count &lt;BLOBPOOL_MAX_COUNT&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Max number of transaction in the blobpool</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 10000]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --txpool.blobpool-max-size &lt;BLOBPOOL_MAX_SIZE&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Max size of the blobpool in megabytes</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 20]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --txpool.blob-cache-size &lt;BLOB_CACHE_SIZE&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Max number of entries for the in memory cache of the blob store</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --txpool.max-account-slots &lt;MAX_ACCOUNT_SLOTS&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Max number of executable transaction slots guaranteed per account</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 16]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --txpool.pricebump &lt;PRICE_BUMP&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Price bump (in %) for the transaction pool underpriced check</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 10]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --txpool.minimal-protocol-fee &lt;MINIMAL_PROTOCOL_BASEFEE&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Minimum base fee required by the protocol</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 7]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --txpool.gas-limit &lt;ENFORCED_GAS_LIMIT&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          The default enforced gas limit for transactions entering the pool</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 30000000]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --blobpool.pricebump &lt;BLOB_TRANSACTION_PRICE_BUMP&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Price bump percentage to replace an already existing blob transaction</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 100]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --txpool.max-tx-input-bytes &lt;MAX_TX_INPUT_BYTES&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Max size in bytes of a single transaction allowed to enter the pool</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 131072]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --txpool.max-cached-entries &lt;MAX_CACHED_ENTRIES&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          The maximum number of blobs to keep in the in memory blob cache</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 100]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --txpool.nolocals</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Flag to disable local transaction exemptions</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --txpool.locals &lt;LOCALS&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Flag to allow certain addresses as local</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --txpool.no-local-transactions-propagation</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Flag to toggle local transaction propagation</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --txpool.additional-validation-tasks &lt;ADDITIONAL_VALIDATION_TASKS&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Number of additional transaction validation tasks to spawn</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 1]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --txpool.max-pending-txns &lt;PENDING_TX_LISTENER_BUFFER_SIZE&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Maximum number of pending transactions from the network to buffer</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 2048]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --txpool.max-new-txns &lt;NEW_TX_LISTENER_BUFFER_SIZE&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Maximum number of new transactions to buffer</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 1024]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --txpool.max-new-pending-txs-notifications &lt;MAX_NEW_PENDING_TXS_NOTIFICATIONS&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          How many new pending transactions to buffer and send to in progress pending transaction iterators</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 200]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --txpool.lifetime &lt;DURATION&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Maximum amount of time non-executable transaction are queued</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 10800]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --txpool.transactions-backup &lt;PATH&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Path to store the local transaction backup at, to survive node restarts</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --txpool.disable-transactions-backup</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Disables transaction backup to disk on node shutdown</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">Builder:</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --builder.extradata &lt;EXTRA_DATA&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Block extra data set by the payload builder</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: reth/&lt;VERSION&gt;/&lt;OS&gt;]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --builder.gaslimit &lt;GAS_LIMIT&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Target gas limit for built blocks</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --builder.interval &lt;DURATION&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          The interval at which the job should build a new payload after the last.</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Interval is specified in seconds or in milliseconds if the value ends with `ms`: * `50ms` -&gt; 50 milliseconds * `1` -&gt; 1 second</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 1]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --builder.deadline &lt;SECONDS&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          The deadline for when the payload builder job should resolve</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 12]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --builder.max-tasks &lt;MAX_PAYLOAD_TASKS&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Maximum number of tasks to spawn for building a payload</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 3]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">Debug:</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --debug.terminate</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Flag indicating whether the node should be terminated after the pipeline sync</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --debug.tip &lt;TIP&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Set the chain tip manually for testing purposes.</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          NOTE: This is a temporary flag</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --debug.max-block &lt;MAX_BLOCK&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Runs the sync only up to the specified block</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --debug.etherscan [&lt;ETHERSCAN_API_URL&gt;]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Runs a fake consensus client that advances the chain using recent block hashes on Etherscan. If specified, requires an `ETHERSCAN_API_KEY` environment variable</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --debug.rpc-consensus-ws &lt;RPC_CONSENSUS_WS&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Runs a fake consensus client using blocks fetched from an RPC `WebSocket` endpoint</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --debug.skip-fcu &lt;SKIP_FCU&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          If provided, the engine will skip `n` consecutive FCUs</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --debug.skip-new-payload &lt;SKIP_NEW_PAYLOAD&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          If provided, the engine will skip `n` consecutive new payloads</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --debug.reorg-frequency &lt;REORG_FREQUENCY&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          If provided, the chain will be reorged at specified frequency</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --debug.reorg-depth &lt;REORG_DEPTH&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          The reorg depth for chain reorgs</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --debug.engine-api-store &lt;PATH&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          The path to store engine API messages at. If specified, all of the intercepted engine API messages will be written to specified location</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --debug.invalid-block-hook &lt;INVALID_BLOCK_HOOK&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Determines which type of invalid block hook to install</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Example: `witness,prestate`</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: witness]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [possible values: witness, pre-state, opcode]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --debug.healthy-node-rpc-url &lt;URL&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          The RPC URL of a healthy node to use for comparing invalid block hook results against.</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">Database:</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --db.log-level &lt;LOG_LEVEL&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Database logging level. Levels higher than &quot;notice&quot; require a debug build</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Possible values:</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          - fatal:   Enables logging for critical conditions, i.e. assertion failures</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          - error:   Enables logging for error conditions</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          - warn:    Enables logging for warning conditions</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          - notice:  Enables logging for normal but significant condition</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          - verbose: Enables logging for verbose informational</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          - debug:   Enables logging for debug-level messages</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          - trace:   Enables logging for trace debug-level messages</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          - extra:   Enables logging for extra debug-level messages</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --db.exclusive &lt;EXCLUSIVE&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Open environment in exclusive/monopolistic mode. Makes it possible to open a database on an NFS volume</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [possible values: true, false]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --db.max-size &lt;MAX_SIZE&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Maximum database size (e.g., 4TB, 8MB)</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --db.growth-step &lt;GROWTH_STEP&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Database growth step (e.g., 4GB, 4KB)</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --db.read-transaction-timeout &lt;READ_TRANSACTION_TIMEOUT&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Read transaction timeout in seconds, 0 means no timeout</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">Dev testnet:</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --dev</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Start the node in dev mode</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          This mode uses a local proof-of-authority consensus engine with either fixed block times</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          or automatically mined blocks.</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Disables network discovery and enables local http server.</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Prefunds 20 accounts derived by mnemonic &quot;test test test test test test test test test test</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          test junk&quot; with 10 000 ETH each.</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --dev.block-max-transactions &lt;BLOCK_MAX_TRANSACTIONS&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          How many transactions to mine per block</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --dev.block-time &lt;BLOCK_TIME&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Interval between blocks.</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Parses strings using [`humantime::parse_duration`]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          --dev.block-time 12s</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">Pruning:</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --full</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Run full node. Only the most recent [`MINIMUM_PRUNING_DISTANCE`] block states are stored</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --block-interval &lt;BLOCK_INTERVAL&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Minimum pruning interval measured in blocks</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --prune.senderrecovery.full</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Prunes all sender recovery data</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --prune.senderrecovery.distance &lt;BLOCKS&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Prune sender recovery data before the `head-N` block number. In other words, keep last N + 1 blocks</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --prune.senderrecovery.before &lt;BLOCK_NUMBER&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Prune sender recovery data before the specified block number. The specified block number is not pruned</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --prune.transactionlookup.full</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Prunes all transaction lookup data</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --prune.transactionlookup.distance &lt;BLOCKS&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Prune transaction lookup data before the `head-N` block number. In other words, keep last N + 1 blocks</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --prune.transactionlookup.before &lt;BLOCK_NUMBER&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Prune transaction lookup data before the specified block number. The specified block number is not pruned</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --prune.receipts.full</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Prunes all receipt data</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --prune.receipts.distance &lt;BLOCKS&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Prune receipts before the `head-N` block number. In other words, keep last N + 1 blocks</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --prune.receipts.before &lt;BLOCK_NUMBER&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Prune receipts before the specified block number. The specified block number is not pruned</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --prune.receiptslogfilter &lt;FILTER_CONFIG&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Configure receipts log filter. Format: &lt;`address`&gt;:&lt;`prune_mode`&gt;[,&lt;`address`&gt;:&lt;`prune_mode`&gt;...] Where &lt;`prune_mode`&gt; can be &#x27;full&#x27;, &#x27;distance:&lt;`blocks`&gt;&#x27;, or &#x27;before:&lt;`block_number`&gt;&#x27;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --prune.accounthistory.full</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Prunes all account history</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --prune.accounthistory.distance &lt;BLOCKS&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Prune account before the `head-N` block number. In other words, keep last N + 1 blocks</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --prune.accounthistory.before &lt;BLOCK_NUMBER&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Prune account history before the specified block number. The specified block number is not pruned</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --prune.storagehistory.full</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Prunes all storage history data</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --prune.storagehistory.distance &lt;BLOCKS&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Prune storage history before the `head-N` block number. In other words, keep last N + 1 blocks</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --prune.storagehistory.before &lt;BLOCK_NUMBER&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Prune storage history before the specified block number. The specified block number is not pruned</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">Engine:</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --engine.persistence-threshold &lt;PERSISTENCE_THRESHOLD&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Configure persistence threshold for engine experimental</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 2]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --engine.memory-block-buffer-target &lt;MEMORY_BLOCK_BUFFER_TARGET&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Configure the target number of blocks to keep in memory</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 2]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --engine.legacy-state-root</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Enable legacy state root</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --engine.caching-and-prewarming</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          CAUTION: This CLI flag has no effect anymore, use --engine.disable-caching-and-prewarming if you want to disable caching and prewarming</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --engine.disable-caching-and-prewarming</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Disable cross-block caching and parallel prewarming</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --engine.state-provider-metrics</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Enable state provider latency metrics. This allows the engine to collect and report stats about how long state provider calls took during execution, but this does introduce slight overhead to state provider calls</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --engine.cross-block-cache-size &lt;CROSS_BLOCK_CACHE_SIZE&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Configure the size of cross-block cache in megabytes</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 4096]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --engine.state-root-task-compare-updates</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Enable comparing trie updates from the state root task to the trie updates from the regular state root calculation</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --engine.accept-execution-requests-hash</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Enables accepting requests hash instead of an array of requests in `engine_newPayloadV4`</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --engine.max-proof-task-concurrency &lt;MAX_PROOF_TASK_CONCURRENCY&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Configure the maximum number of concurrent proof tasks</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 256]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --engine.reserved-cpu-cores &lt;RESERVED_CPU_CORES&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Configure the number of reserved CPU cores for non-reth processes</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 1]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --engine.precompile-cache</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Enable precompile cache</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --engine.state-root-fallback</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Enable state root fallback, useful for testing</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">Ress:</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --ress.enable</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Enable support for `ress` subprotocol</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --ress.max-active-connections &lt;MAX_ACTIVE_CONNECTIONS&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          The maximum number of active connections for `ress` subprotocol</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 5]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --ress.max-witness-window &lt;MAX_WITNESS_WINDOW&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          The maximum witness lookback window</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 1024]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --ress.witness-max-parallel &lt;WITNESS_MAX_PARALLEL&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          The maximum number of witnesses to generate in parallel</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 5]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --ress.witness-cache-size &lt;WITNESS_CACHE_SIZE&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Witness cache size</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 10]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">Logging:</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --log.stdout.format &lt;FORMAT&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          The format to use for logs written to stdout</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: terminal]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Possible values:</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          - json:     Represents JSON formatting for logs. This format outputs log records as JSON objects, making it suitable for structured logging</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          - log-fmt:  Represents logfmt (key=value) formatting for logs. This format is concise and human-readable, typically used in command-line applications</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          - terminal: Represents terminal-friendly formatting for logs</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --log.stdout.filter &lt;FILTER&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          The filter to use for logs written to stdout</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: ]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --log.file.format &lt;FORMAT&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          The format to use for logs written to the log file</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: terminal]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Possible values:</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          - json:     Represents JSON formatting for logs. This format outputs log records as JSON objects, making it suitable for structured logging</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          - log-fmt:  Represents logfmt (key=value) formatting for logs. This format is concise and human-readable, typically used in command-line applications</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          - terminal: Represents terminal-friendly formatting for logs</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --log.file.filter &lt;FILTER&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          The filter to use for logs written to the log file</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: debug]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --log.file.directory &lt;PATH&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          The path to put log files in</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: &lt;CACHE_DIR&gt;/logs]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --log.file.max-size &lt;SIZE&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          The maximum size (in MB) of one log file</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 200]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --log.file.max-files &lt;COUNT&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          The maximum amount of log files that will be stored. If set to 0, background file logging is disabled</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: 5]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --log.journald</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Write logs to journald</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --log.journald.filter &lt;FILTER&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          The filter to use for logs written to journald</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: error]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">      --color &lt;COLOR&gt;</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Sets whether or not the formatter emits ANSI terminal escape codes for colors and other text formatting</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          [default: always]</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Possible values:</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          - always: Colors on</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          - auto:   Colors on</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          - never:  Colors off</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">Display:</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">  -v, --verbosity...</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Set the minimum log level.</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          -v      Errors</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          -vv     Warnings</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          -vvv    Info</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          -vvvv   Debug</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          -vvvvv  Traces (warning: very verbose!)</span></span>
+<span class="line vocs_Span"><span class="vocs_Span"></span></span>
+<span class="line vocs_Span"><span class="vocs_Span">  -q, --quiet</span></span>
+<span class="line vocs_Span"><span class="vocs_Span">          Silence all log output</span></span></code></pre></div></div></article><footer class="vocs_Footer" data-layout="docs"><div class="vocs_Footer_container"></div></footer></div><div data-bottom-observer="true"></div></div></div>
+  </body>
+</html>
