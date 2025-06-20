@@ -8,6 +8,7 @@ description: Secure, performant and modular node implementation that supports bo
 ---
 
 import { HomePage, Sponsors } from "vocs/components";
+import { SdkShowcase } from "../components/SdkShowcase";
 
 <div className="max-w-[1120px] mx-auto vp-doc relative px-[24px] mb-[64px] mt-[32px] md:px-0 md:mb-[32px]">
   <div className="pt-[48px] max-sm:pt-0">
@@ -40,11 +41,12 @@ import { HomePage, Sponsors } from "vocs/components";
             ```
 
             ```bash [Build a Node]
+            let payload_svc = BasicPayloadServiceBuilder::new(OpPayloadBuilder::new(false));
             ComponentsBuilder::default()
                 .node_types::<Node>()
                 .pool(OpPoolBuilder::default())
                 .executor(CustomExecutorBuilder::default())
-                .payload(BasicPayloadServiceBuilder::new(OpPayloadBuilder::new(false)))
+                .payload(payload_svc)
                 .network(OpNetworkBuilder::new(false, false))
                 .consensus(OpConsensusBuilder::default())
             ```
@@ -138,6 +140,13 @@ import { HomePage, Sponsors } from "vocs/components";
 </div>
 <article className="vocs_Content max-w-5xl mx-auto">
 
-</article>
+## Built using Reth SDK
+
+Production chains and networks powered by Reth's modular architecture.
+
+<SdkShowcase />
+
+## Supporters
 
 <Sponsors />
+</article>
