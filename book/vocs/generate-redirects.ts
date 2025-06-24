@@ -2,21 +2,26 @@
 import { writeFileSync, mkdirSync } from 'fs'
 import { join, dirname } from 'path'
 import { redirects } from './redirects.config'
+// Base path for the site
+const basePath = '/reth'
 
 function generateRedirectHtml(targetPath: string): string {
+  // Add base path if target doesn't already have it
+  const finalPath = targetPath.startsWith(basePath) ? targetPath : `${basePath}${targetPath}`
+  
   return `<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
     <title>Redirecting...</title>
-    <meta http-equiv="refresh" content="0; URL=${targetPath}">
-    <link rel="canonical" href="${targetPath}">
+    <meta http-equiv="refresh" content="0; URL=${finalPath}">
+    <link rel="canonical" href="${finalPath}">
 </head>
 <body>
     <script>
-        window.location.href = "${targetPath}";
+        window.location.href = "${finalPath}";
     </script>
-    <p>Reth mdbook has been migrated to new docs. If you are not redirected please <a href="${targetPath}">click here</a>.</p>
+    <p>Reth mdbook has been migrated to new docs. If you are not redirected please <a href="${finalPath}">click here</a>.</p>
 </body>
 </html>`
 }
