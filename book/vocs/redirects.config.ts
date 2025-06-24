@@ -2,11 +2,6 @@ export const redirects: Record<string, string> = {
   '/intro': '/overview',
   // Installation redirects
   '/installation/installation': '/installation/binaries',
-  '/installation/binaries': '/installation/binaries',
-  '/installation/docker': '/installation/docker',
-  '/installation/source': '/installation/source',
-  '/installation/build-for-arm-devices': '/installation/build-for-arm-devices',
-  '/installation/priorities': '/installation/priorities',
   // Run a node redirects
   '/run/run-a-node': '/run/overview',
   '/run/mainnet': '/run/ethereum',
