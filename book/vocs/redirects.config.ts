@@ -1,5 +1,5 @@
 export const redirects: Record<string, string> = {
-  '/reth/intro': '/reth/overview',
+  '/intro': '/overview',
   // Add more redirects here as needed
   // '/old-path': '/new-path',
 }
