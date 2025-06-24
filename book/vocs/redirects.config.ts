@@ -3,3 +3,5 @@ export const redirects: Record<string, string> = {
   // Add more redirects here as needed
   // '/old-path': '/new-path',
 }
+
+export const basePath = '/reth';
