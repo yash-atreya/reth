@@ -1,5 +1,6 @@
 import { defineConfig } from 'vocs'
 import { sidebar } from './sidebar'
+import { redirects } from './redirects.config'
 
 export default defineConfig({
   title: 'Reth',
@@ -64,5 +65,41 @@ export default defineConfig({
   },
   editLink: {
     pattern: "https://github.com/paradigmxyz/reth/edit/main/book/vocs/docs/pages/:path",
+  },
+  vite: {
+    plugins: [
+      {
+        name: 'custom-redirects',
+        configureServer(server) {
+          server.middlewares.use((req, res, next) => {
+            if (!req.url) {
+              next()
+              return
+            }
+
+            // Check for direct match
+            if (redirects[req.url]) {
+              res.statusCode = 301
+              res.setHeader('Location', redirects[req.url])
+              res.end()
+              return
+            }
+
+            // Check if URL ends with .html and try without it
+            if (req.url.endsWith('.html')) {
+              const urlWithoutHtml = req.url.slice(0, -5)
+              if (redirects[urlWithoutHtml]) {
+                res.statusCode = 301
+                res.setHeader('Location', redirects[urlWithoutHtml])
+                res.end()
+                return
+              }
+            }
+            
+            next()
+          })
+        }
+      }
+    ]
   }
 })
