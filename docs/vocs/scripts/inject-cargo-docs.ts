@@ -4,7 +4,7 @@ import { glob } from 'glob';
 
 const CARGO_DOCS_PATH = '../../target/doc';
 const VOCS_DIST_PATH = './docs/dist/docs';
-const BASE_PATH = '/docs';
+const BASE_PATH = '/reth/docs';
 
 async function injectCargoDocs() {
   console.log('Injecting cargo docs into Vocs dist...');
