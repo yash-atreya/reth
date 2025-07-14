@@ -46,36 +46,10 @@ jobs:
           bun i
           npx playwright install --with-deps chromium
 
-      - name: Build Rust documentation
-        run: |
-          echo "Starting in directory: $(pwd)"
-          cd docs/vocs/
-          echo "Now in directory: $(pwd)"
-          bash scripts/build-cargo-docs.sh
-          echo "Back in directory: $(pwd)"
-          echo "Checking if docs exist at ../../target/doc:"
-          ls -la ../../target/doc 2>/dev/null | head -10 || echo "../../target/doc not found"
-          echo "Cargo docs build step completed"
-
-      - name: Build Vocs
-        run: |
-          cd docs/vocs/ && bunx vocs build
-          echo "Vocs Build Complete"
-
-      - name: Generate redirects
-        run: |
-          cd docs/vocs/ && bun scripts/generate-redirects.ts
-          echo "Redirects generated"
-
-      - name: Inject cargo docs
+      - name: Build documentation
         run: |
           cd docs/vocs/
-          echo "Current directory: $(pwd)"
-          echo "Checking target/doc from here:"
-          ls -la ../../target/doc 2>/dev/null | head -5 || echo "target/doc not found"
-          echo "Running inject script..."
-          bun scripts/inject-cargo-docs.ts
-          echo "Cargo docs injected"
+          bun run build
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
