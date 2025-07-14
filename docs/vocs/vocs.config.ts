@@ -14,7 +14,7 @@ export default defineConfig({
     { text: 'Run', link: '/run/ethereum' },
     { text: 'SDK', link: '/sdk/overview' },
     { 
-      element: React.createElement('a', { href: '/docs', target: '_self' }, 'Rustdocs')
+      element: React.createElement('a', { href: '/reth/docs', target: '_self' }, 'Rustdocs')
     },
     { text: 'GitHub', link: 'https://github.com/paradigmxyz/reth' },
     {

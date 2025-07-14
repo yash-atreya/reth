@@ -27,4 +27,4 @@ export const redirects: Record<string, string> = {
   '/developers/contribute': '/introduction/contributing',
 }
 
-export const basePath = '/';
+export const basePath = '/reth';

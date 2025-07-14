@@ -4,7 +4,7 @@ import { glob } from 'glob';
 
 const CARGO_DOCS_PATH = '../../target/doc';
 const VOCS_DIST_PATH = './docs/dist/docs';
-const BASE_PATH = '/docs';
+const BASE_PATH = '/reth/docs';
 
 async function injectCargoDocs() {
   console.log('Injecting cargo docs into Vocs dist...');
@@ -12,6 +12,11 @@ async function injectCargoDocs() {
   // Check if cargo docs exist
   try {
     await fs.access(CARGO_DOCS_PATH);
+    const files = await fs.readdir(CARGO_DOCS_PATH);
+    console.log(`Found ${files.length} files/directories in ${CARGO_DOCS_PATH}`);
+    if (files.length < 5) {
+      console.log('Files found:', files);
+    }
   } catch {
     console.error(`Error: Cargo docs not found at ${CARGO_DOCS_PATH}`);
     console.error("Please run: cargo doc --no-deps --workspace --exclude 'example-*'");
@@ -86,6 +91,40 @@ async function injectCargoDocs() {
     await fs.writeFile(file, content, 'utf-8');
   }
 
+  // Find the actual search JS filename from the HTML files
+  let actualSearchJsFile = '';
+  console.log(`Searching for search JS filename in ${htmlFiles.length} HTML files...`);
+  
+  for (const htmlFile of htmlFiles) {
+    const htmlContent = await fs.readFile(htmlFile, 'utf-8');
+    const searchMatch = htmlContent.match(/data-search-js="[^"]*\/([^"]+)"/);
+    if (searchMatch && searchMatch[1]) {
+      actualSearchJsFile = searchMatch[1];
+      console.log(`Found search JS file: ${actualSearchJsFile} in ${htmlFile}`);
+      break;
+    }
+  }
+  
+  if (!actualSearchJsFile) {
+    console.error('Could not detect search JS filename from HTML files');
+    console.error('This usually means cargo docs were not built or copied correctly.');
+    
+    // Try to check if any HTML files exist
+    if (htmlFiles.length === 0) {
+      console.error('No HTML files found in the dist directory');
+    } else {
+      console.error(`Checked ${htmlFiles.length} HTML files but none contained data-search-js attribute`);
+      // Log the first file's content snippet for debugging
+      const firstFile = htmlFiles[0];
+      const content = await fs.readFile(firstFile, 'utf-8');
+      const snippet = content.substring(0, 500);
+      console.error(`First file (${firstFile}) content snippet:`);
+      console.error(snippet);
+    }
+    
+    process.exit(1);
+  }
+  
   // Also fix paths in JavaScript files
   const jsFiles = await glob(`${VOCS_DIST_PATH}/**/*.js`);
   
@@ -102,9 +141,28 @@ async function injectCargoDocs() {
     // Fix the search form submission issue that causes page reload
     // Instead of submitting a form, just ensure the search functionality is loaded
     if (file.includes('main-') && file.endsWith('.js')) {
+      // First, add a failsafe counter to prevent infinite reloads
+      content = content.replace(
+        /window\.searchState=\{/g,
+        'window.searchFailureCount=(window.searchFailureCount||0);window.searchState={'
+      );
+      
       content = content.replace(
         /function sendSearchForm\(\)\{document\.getElementsByClassName\("search-form"\)\[0\]\.submit\(\)\}/g,
-        'function sendSearchForm(){/* Fixed: No form submission needed - search loads via script */}'
+        `function sendSearchForm(){
+          /* Fixed: Prevent infinite reload loop */
+          window.searchFailureCount++;
+          if(window.searchFailureCount>2){
+            console.error("Search functionality unavailable after multiple attempts");
+            const search=window.searchState.outputElement();
+            if(search){
+              search.innerHTML='<div class="search-error">No Results</div>';
+              window.searchState.showResults(search);
+            }
+            return;
+          }
+          console.warn("Search script failed to load, attempt "+window.searchFailureCount);
+        }`
       );
       
       // Also fix the root path references in the search functionality
@@ -120,9 +178,10 @@ async function injectCargoDocs() {
       );
       
       // Fix the search-js variable to return just the filename
+      // Use the detected search filename
       content = content.replace(
         /getVar\("search-js"\)/g,
-        `"search-f7877310.js"`
+        `"${actualSearchJsFile}"`
       );
       
       // Fix the search index loading path
